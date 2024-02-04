@@ -12,8 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const description = document.querySelector("#description");
 
     discord_social.addEventListener("click", function() {
+        /* 
         toastr.info('Copied discord user to clipboard!');
         navigator.clipboard.writeText("realmasteroogway");
+        */
+        navigateToNewTab("https://discord.com/users/830031741225009203")
     });
 
     github_social.addEventListener("click", function() {
