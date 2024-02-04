@@ -1375,7 +1375,6 @@ nav:where(.astro-X2RMUDZS){
 .avatar-list:where(.astro-4C363JSL) a:where(.astro-4C363JSL):focus{
     outline:2px solid transparent;
     box-shadow:0 0 0 .08em var(--theme-accent),0 0 0 .12em #fff;
-    
 }
 .avatar-list:where(.astro-4C363JSL) a:where(.astro-4C363JSL):hover{
     box-shadow: 0 0 35px rgba(255, 255, 255, 0.5);
