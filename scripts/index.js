@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     typewriter.typeString('You can call me oogway, this website is my personal project site, feel free to take a look around!')
-        .pauseFor(5500)
+        .pauseFor(6750) 
         .start();
 
 
