@@ -43,8 +43,11 @@ document.addEventListener('DOMContentLoaded', function() {
     typewriter = new Typewriter(description, {
         loop: false
     });
-
-    typewriter.typeString('You can call me oogway, this website is my personal project site, feel free to take a look around!')
+    let translation = 'But you can call me Oogway, this website is my personal project site, feel free to take a look around!'
+    if (this.location.href.includes("actualmasteroogway.github.io/de")) {
+        translation = 'Du kannst mich aber Oogway nennen. Diese Website ist für meine persönliche Projekte, aber das sollte dich nicht aufhalten dich umzuschauen!'
+    }
+    typewriter.typeString(translation)
         .pauseFor(6750) 
         .start();
 
