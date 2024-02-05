@@ -4,7 +4,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width">
       <meta name="generator" content="Astro v1.6.11">
-      <link rel="icon" type="image/svg+xml" href="https://avatars.githubusercontent.com/u/140579771">
+      <link rel="icon" type="image/svg+xml" href="../../../assets/pepsi🤑.png">
       <link rel="sitemap" href="../../../sitemap.xml">
       <script src="../../../scripts/make-scrollable-code-focusable.js"></script>
       <script>
@@ -50,7 +50,7 @@
             </div>
             <div class="logo flex astro-TZKREXCX">
                <a href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/" class="astro-TZKREXCX">
-                  <img src="https://avatars.githubusercontent.com/u/140579771" alt="pepsi" class="logo" width="64" height="64" viewBox="0 0 24 24" fill="none">
+                  <img src="../../../assets/pepsi🤑.png" alt="pepsi" class="logo" width="64" height="64" viewBox="0 0 24 24" fill="none">
                   <h1 class="astro-TZKREXCX">Pepsi Documentation</h1>
                </a>
             </div>
@@ -214,7 +214,7 @@
             <ul class="avatar-list astro-4C363JSL" style="--avatar-count: 3">
                <li class="astro-4C363JSL">
                   <a href="https://github.com/Pepsied-5229/" class="astro-4C363JSL">
-                  <img alt="Pepsi, Original Creator" title="Pepsi, Original Creator" width="64" height="64" src="https://avatars.githubusercontent.com/u/140579771" class="astro-4C363JSL">
+                  <img alt="Pepsi, Original Creator" title="Pepsi, Original Creator" width="64" height="64" src="../../../assets/pepsi🤑.png" class="astro-4C363JSL">
                   </a>
                </li>
                <li class="astro-4C363JSL">
@@ -226,7 +226,10 @@
          </div>
       </footer>
       <script>
-        window.onload = function() {
+         window.onload = function() {
+            if (location.href.endsWith("/index.html")) {
+               location.href = location.href.replace("/index.html", "/")
+            }
             if (location.href.includes('http://localhost:5500/') || location.href.includes('http://127.0.0.1:5500/')) {
                 var links = document.getElementsByTagName('a');
                 for (var i = 0; i < links.length; i++) {
@@ -237,7 +240,7 @@
                     }
                 }
             }
-        };        
+         };        
       </script>
    </body>
 </html>

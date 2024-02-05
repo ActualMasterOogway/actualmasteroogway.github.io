@@ -4,7 +4,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width">
       <meta name="generator" content="Astro v1.6.11">
-      <link rel="icon" type="image/svg+xml" href="https://avatars.githubusercontent.com/u/140579771">
+      <link rel="icon" type="image/svg+xml" href="../../assets/pepsi🤑.png">
       <link rel="sitemap" href="../../sitemap.xml">
       <script src="../../scripts/make-scrollable-code-focusable.js"></script>
       <script>
@@ -50,7 +50,7 @@
             </div>
             <div class="logo flex astro-TZKREXCX">
                <a href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/" class="astro-TZKREXCX">
-                  <img src="https://avatars.githubusercontent.com/u/140579771" alt="pepsi" class="logo" width="64" height="64" viewBox="0 0 24 24" fill="none">
+                  <img src="../../assets/pepsi🤑.png" alt="pepsi" class="logo" width="64" height="64" viewBox="0 0 24 24" fill="none">
                   <h1 class="astro-TZKREXCX">Pepsi Documentation</h1>
                </a>
             </div>
@@ -146,20 +146,20 @@
                   <p>This is the written documentation for Pepsi User Interface.</p>
                   <p>Last updated for v0.37</p>
                   <h2 id="why-choose-pepsi">Why choose Pepsi?</h2>
+                  <p>(Everything with a Star goes for my edited version of the Library only!)</p>
                   <ul>
                      <li>
-                        <p>🛠️ <strong>Occasional Bugfixes</strong></p>
+                        <p>🛠️ <strong>Occasional Bugfixes *</strong></p>
                      </li>
                      <li>
-                        <p>💫 <strong>Open to any suggestions</strong></p>
+                        <p>💫 <strong>Open to any suggestions *</strong></p>
                      </li>
                      <li>
                         <p>⚙️ <strong>Advanced Features like:</strong></p>
                         <ul>
                            <li>⏏️ <strong>Prompts the User can interact with</strong></li>
                            <li>🔧 <strong>Useful Built-In functions and variabls Developers can take advantage</strong></li>
-                           <li>😍 <strong>Occasional Updates</strong></li>
-                           <li>🔔 <strong>Notifications with actions</strong></li>
+                           <li>😍 <strong>Occasional Updates *</strong></li>
                         </ul>
                      </li>
                      <li>
@@ -204,7 +204,7 @@
             <ul class="avatar-list astro-4C363JSL" style="--avatar-count: 3">
                <li class="astro-4C363JSL">
                   <a href="https://github.com/Pepsied-5229/" class="astro-4C363JSL">
-                  <img alt="Pepsi, Original Creator" title="Pepsi, Original Creator" width="64" height="64" src="https://avatars.githubusercontent.com/u/140579771" class="astro-4C363JSL">
+                  <img alt="Pepsi, Original Creator" title="Pepsi, Original Creator" width="64" height="64" src="../../assets/pepsi🤑.png" class="astro-4C363JSL">
                   </a>
                </li>
                <li class="astro-4C363JSL">
@@ -217,16 +217,19 @@
       </footer>
       <script>
          window.onload = function() {
-             if (location.href.includes('http://localhost:5500/') || location.href.includes('http://127.0.0.1:5500/')) {
-                 var links = document.getElementsByTagName('a');
-                 for (var i = 0; i < links.length; i++) {
-                     var link = links[i];
-                     var href = link.getAttribute('href');
-                     if (href && href.includes('https://actualmasteroogway.github.io')) {
-                         link.setAttribute('href', href.replace('https://actualmasteroogway.github.io', 'http://localhost:5500/actualmasteroogway.github.io'));
-                     }
-                 }
-             }
+            if (location.href.endsWith("/index.html")) {
+               location.href = location.href.replace("/index.html", "/")
+            }
+            if (location.href.includes('http://localhost:5500/') || location.href.includes('http://127.0.0.1:5500/')) {
+               var links = document.getElementsByTagName('a');
+               for (var i = 0; i < links.length; i++) {
+                  var link = links[i];
+                  var href = link.getAttribute('href');
+                  if (href && href.includes('https://actualmasteroogway.github.io')) {
+                        link.setAttribute('href', href.replace('https://actualmasteroogway.github.io', 'http://localhost:5500/actualmasteroogway.github.io'));
+                  }
+               }
+            }
          };        
        </script>
    </body>
