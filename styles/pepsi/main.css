@@ -341,8 +341,8 @@ h2.heading{
 }
 .heading-link{
     font-size:1rem;
-    padding:.1rem 0 .1rem 1rem;
-    margin-bottom:.5rem
+    padding:0 0 0 1rem;
+    margin-bottom:.5rem;
 }
 .heading-link:hover,.heading-link:focus{
     border-left-color:var(--theme-accent);
@@ -360,13 +360,13 @@ h2.heading{
 }
 .heading-link a{
     display:inline-flex;
-    gap:.5em;
+    gap:0.5em;
     width:100%;
-    padding:.15em 0
+    padding:.03em 0
 }
 .heading-link a{
-    border-left:4px solid var(--theme-divider);
-    padding-left:1rem
+    border-left:3px solid var(--theme-divider);
+    padding-left:0.75rem;
 }
 .heading-link.depth-3{
     padding-left:2rem
