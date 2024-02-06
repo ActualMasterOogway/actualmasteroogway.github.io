@@ -8,7 +8,13 @@
       <link rel="sitemap" href="../../../sitemap.xml">
       <script src="../../../scripts/make-scrollable-code-focusable.js"></script>
       <script>
-         document.documentElement.classList.add("theme-dark");
+         const root = document.documentElement;
+         const theme = localStorage.getItem("theme");
+         if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+           root.classList.add("theme-dark");
+         } else {
+           root.classList.remove("theme-dark");
+         }
       </script>
       <link rel="canonical" href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/#getting-started">
       <!-- OpenGraph Tags -->
@@ -169,10 +175,36 @@
                            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comment-alt" class="svg-inline--fa fa-comment-alt fa-w-16 astro-VKS6NUS2" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="1em" width="1em">
                               <path fill="currentColor" d="M448 0H64C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h96v84c0 9.8 11.2 15.5 19.1 9.7L304 416h144c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64z" class="astro-VKS6NUS2"></path>
                            </svg>
-                           <span class="astro-VKS6NUS2">Join our community</span>
+                           <span class="astro-VKS6NUS2">Join my community</span>
+                        </a>
+                     </li>
+                     <li class="heading-link depth-2 astro-VKS6NUS2">
+                        <a href="https://discord.gg/VzYTJ7Y" target="_blank" class="astro-VKS6NUS2">
+                           <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comment-alt" class="svg-inline--fa fa-comment-alt fa-w-16 astro-VKS6NUS2" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="1em" width="1em">
+                              <path fill="currentColor" d="M448 0H64C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h96v84c0 9.8 11.2 15.5 19.1 9.7L304 416h144c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64z" class="astro-VKS6NUS2"></path>
+                           </svg>
+                           <span class="astro-VKS6NUS2">Join Pepsi's Community</span>
                         </a>
                      </li>
                   </ul>
+                  <div style="margin: 2rem 0; text-align: center;" class="astro-VKS6NUS2">
+                     <astro-island uid="Z21s5Dv" component-export="default" ssr="" client="visible" await-children="">
+                        <div class="theme-toggle">
+                           <label class="light-theme-label">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                 <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd"></path>
+                              </svg>
+                              <input type="radio" name="theme-toggle" value="light" title="Use light theme" aria-label="Use light theme" />
+                           </label>
+                           <label class="dark-theme-label">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                 <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                              </svg>
+                              <input type="radio" name="theme-toggle" value="dark" title="Use dark theme" aria-label="Use dark theme" />
+                           </label>
+                        </div>
+                     </astro-island>
+                  </div>
                </div>
             </nav>
          </aside>
@@ -196,20 +228,32 @@
       </footer>
       <script>
          window.onload = function() {
+            var lightThemeLabel = document.querySelector('.light-theme-label');
+            var darkThemeLabel = document.querySelector('.dark-theme-label');
+
+            lightThemeLabel.addEventListener('click', function() {
+               localStorage.setItem("theme", "light")
+               document.documentElement.classList.remove("theme-dark");
+            });
+
+            darkThemeLabel.addEventListener('click', function() {
+               localStorage.setItem("theme", "dark")
+               document.documentElement.classList.add("theme-dark");
+            });
             if (location.href.endsWith("/index.html")) {
                location.href = location.href.replace("/index.html", "/")
             }
             if (location.href.includes('http://localhost:5500/') || location.href.includes('http://127.0.0.1:5500/')) {
-                  var links = document.getElementsByTagName('a');
-                  for (var i = 0; i < links.length; i++) {
-                     var link = links[i];
-                     var href = link.getAttribute('href');
-                     if (href && href.includes('https://actualmasteroogway.github.io')) {
+               var links = document.getElementsByTagName('a');
+               for (var i = 0; i < links.length; i++) {
+                  var link = links[i];
+                  var href = link.getAttribute('href');
+                  if (href && href.includes('https://actualmasteroogway.github.io')) {
                         link.setAttribute('href', href.replace('https://actualmasteroogway.github.io', 'http://localhost:5500/actualmasteroogway.github.io'));
-                     }
                   }
+               }
             }
          };        
-      </script>
+       </script>
    </body>
 </html>

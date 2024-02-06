@@ -6,9 +6,17 @@
       <meta name="generator" content="Astro v1.6.11">
       <link rel="icon" type="image/svg+xml" href="../../assets/pepsi🤑.png">
       <link rel="sitemap" href="../../sitemap.xml">
+      <!-- Scrollable a11y code helper -->
       <script src="../../scripts/make-scrollable-code-focusable.js"></script>
+      <!-- This is intentionally inlined to avoid FOUC -->
       <script>
-         document.documentElement.classList.add("theme-dark");
+         const root = document.documentElement;
+         const theme = localStorage.getItem("theme");
+         if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+           root.classList.add("theme-dark");
+         } else {
+           root.classList.remove("theme-dark");
+         }
       </script>
       <link rel="canonical" href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/#getting-started">
       <!-- OpenGraph Tags -->
@@ -133,7 +141,7 @@
                   <h1 class="content-title astro-ODZYTA4E" id="overview">Introduction</h1>
                   <nav class="block sm:hidden astro-ODZYTA4E">
                      <script>(self.Astro=self.Astro||{}).media=(s,a)=>{const t=async()=>{await(await s())()};if(a.value){const e=matchMedia(a.value);e.matches?t():e.addEventListener("change",t,{once:!0})}},window.dispatchEvent(new Event("astro:media"));</script>
-                     <astro-island uid="Z2fXvnj" component-url="/TableOfContents.8d2be58d.js" component-export="default" renderer-url="/client.369633e5.js" props="{&quot;headings&quot;:[1,&quot;[[0,{\&quot;depth\&quot;:[0,2],\&quot;slug\&quot;:[0,\&quot;why-choose-pepsi\&quot;],\&quot;text\&quot;:[0,\&quot;Why choose Pepsi?\&quot;]}],[0,{\&quot;depth\&quot;:[0,2],\&quot;slug\&quot;:[0,\&quot;getting-started\&quot;],\&quot;text\&quot;:[0,\&quot;Getting Started\&quot;]}]]&quot;],&quot;class&quot;:[0,&quot;astro-ODZYTA4E&quot;]}" ssr="" client="media" opts="{&quot;name&quot;:&quot;TableOfContents&quot;,&quot;value&quot;:&quot;(max-width: 50em)&quot;}" await-children="">
+                     <astro-island uid="Z2fXvnj" component-url="/TableOfContents.js" component-export="default" renderer-url="/client.369633e5.js" props="{&quot;headings&quot;:[1,&quot;[[0,{\&quot;depth\&quot;:[0,2],\&quot;slug\&quot;:[0,\&quot;why-choose-pepsi\&quot;],\&quot;text\&quot;:[0,\&quot;Why choose Pepsi?\&quot;]}],[0,{\&quot;depth\&quot;:[0,2],\&quot;slug\&quot;:[0,\&quot;getting-started\&quot;],\&quot;text\&quot;:[0,\&quot;Getting Started\&quot;]}]]&quot;],&quot;class&quot;:[0,&quot;astro-ODZYTA4E&quot;]}" ssr="" client="media" opts="{&quot;name&quot;:&quot;TableOfContents&quot;,&quot;value&quot;:&quot;(max-width: 50em)&quot;}" await-children="">
                         <h2 class="heading">On this page</h2>
                         <ul>
                            <li class="heading-link depth-2"><a href="#overview">Overview</a></li>
@@ -170,12 +178,33 @@
                   <p>To get started with Pepsi, check out the sidebar at the left. It provides quick links on how to use all of the Pepsi features for your own project. Keep the this documentation around so that you can always refer back to it as you build.</p>
                   <p>Found a missing feature that you can't live without? Please suggest it on Discord (<a href="https://discord.gg/6h4pG5Py7P">#suggestions</a> channel)  and even consider adding it yourself on GitHub! Pepsi &#x26; Pepsi is an open source project and contributions from developers like you are more than welcome!</p>
                </section>
+               <nav class="block sm:hidden astro-ODZYTA4E">
+                  <h2 class="heading astro-VKS6NUS2">More</h2>
+                  <ul class="astro-VKS6NUS2">
+                     <li class="heading-link depth-2 astro-VKS6NUS2">
+                        <a class="edit-on-github astro-VKS6NUS2" href="https://github.com/DarthGigi/rayfield-docs/tree/master/src/pages/en/introduction.md" target="_blank">
+                           <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pen" class="svg-inline--fa fa-pen fa-w-16 astro-VKS6NUS2" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="1em" width="1em">
+                              <path fill="currentColor" d="M290.74 93.24l128.02 128.02-277.99 277.99-114.14 12.6C11.35 513.54-1.56 500.62.14 485.34l12.7-114.22 277.9-277.88zm207.2-19.06l-60.11-60.11c-18.75-18.75-49.16-18.75-67.91 0l-56.55 56.55 128.02 128.02 56.55-56.55c18.75-18.76 18.75-49.16 0-67.91z" class="astro-VKS6NUS2"></path>
+                           </svg>
+                           <span class="astro-VKS6NUS2">Edit this page</span>
+                        </a>
+                     </li>
+                     <li class="heading-link depth-2 astro-VKS6NUS2">
+                        <a href="https://discord.gg/sirius" target="_blank" class="astro-VKS6NUS2">
+                           <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comment-alt" class="svg-inline--fa fa-comment-alt fa-w-16 astro-VKS6NUS2" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="1em" width="1em">
+                              <path fill="currentColor" d="M448 0H64C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h96v84c0 9.8 11.2 15.5 19.1 9.7L304 416h144c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64z" class="astro-VKS6NUS2"></path>
+                           </svg>
+                           <span class="astro-VKS6NUS2">Join our community</span>
+                        </a>
+                     </li>
+                  </ul>
+               </nav>
             </article>
          </div>
          <aside id="grid-right" class="grid-sidebar astro-AE33LDQH" title="Table of Contents">
             <nav class="sidebar-nav astro-FUN2YNBG" aria-labelledby="grid-right">
                <div class="sidebar-nav-inner astro-FUN2YNBG">
-                  <astro-island uid="Zy29CR" component-url="/TableOfContents.8d2be58d.js" component-export="default" renderer-url="/client.369633e5.js" props="{&quot;headings&quot;:[1,&quot;[[0,{\&quot;depth\&quot;:[0,2],\&quot;slug\&quot;:[0,\&quot;why-choose-pepsi\&quot;],\&quot;text\&quot;:[0,\&quot;Why choose Pepsi?\&quot;]}],[0,{\&quot;depth\&quot;:[0,2],\&quot;slug\&quot;:[0,\&quot;getting-started\&quot;],\&quot;text\&quot;:[0,\&quot;Getting Started\&quot;]}]]&quot;],&quot;class&quot;:[0,&quot;astro-FUN2YNBG&quot;]}" ssr="" client="media" opts="{&quot;name&quot;:&quot;TableOfContents&quot;,&quot;value&quot;:&quot;(min-width: 50em)&quot;}" await-children="">
+                  <astro-island uid="Zy29CR" component-url="/TableOfContents.js" component-export="default" renderer-url="/client.369633e5.js" props="{&quot;headings&quot;:[1,&quot;[[0,{\&quot;depth\&quot;:[0,2],\&quot;slug\&quot;:[0,\&quot;why-choose-pepsi\&quot;],\&quot;text\&quot;:[0,\&quot;Why choose Pepsi?\&quot;]}],[0,{\&quot;depth\&quot;:[0,2],\&quot;slug\&quot;:[0,\&quot;getting-started\&quot;],\&quot;text\&quot;:[0,\&quot;Getting Started\&quot;]}]]&quot;],&quot;class&quot;:[0,&quot;astro-FUN2YNBG&quot;]}" ssr="" client="media" opts="{&quot;name&quot;:&quot;TableOfContents&quot;,&quot;value&quot;:&quot;(min-width: 50em)&quot;}" await-children="">
                      <h2 class="heading">On this page</h2>
                      <ul>
                         <li class="heading-link depth-2"><a href="#overview">Overview</a></li>
@@ -190,10 +219,36 @@
                            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comment-alt" class="svg-inline--fa fa-comment-alt fa-w-16 astro-VKS6NUS2" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="1em" width="1em">
                               <path fill="currentColor" d="M448 0H64C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h96v84c0 9.8 11.2 15.5 19.1 9.7L304 416h144c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64z" class="astro-VKS6NUS2"></path>
                            </svg>
-                           <span class="astro-VKS6NUS2">Join our community</span>
+                           <span class="astro-VKS6NUS2">Join my community</span>
+                        </a>
+                     </li>
+                     <li class="heading-link depth-2 astro-VKS6NUS2">
+                        <a href="https://discord.gg/VzYTJ7Y" target="_blank" class="astro-VKS6NUS2">
+                           <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comment-alt" class="svg-inline--fa fa-comment-alt fa-w-16 astro-VKS6NUS2" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="1em" width="1em">
+                              <path fill="currentColor" d="M448 0H64C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h96v84c0 9.8 11.2 15.5 19.1 9.7L304 416h144c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64z" class="astro-VKS6NUS2"></path>
+                           </svg>
+                           <span class="astro-VKS6NUS2">Join Pepsi's Community</span>
                         </a>
                      </li>
                   </ul>
+                  <div style="margin: 2rem 0; text-align: center;" class="astro-VKS6NUS2">
+                     <astro-island uid="Z21s5Dv" component-export="default" ssr="" client="visible" await-children="">
+                        <div class="theme-toggle">
+                           <label class="light-theme-label">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                 <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd"></path>
+                              </svg>
+                              <input type="radio" name="theme-toggle" value="light" title="Use light theme" aria-label="Use light theme" />
+                           </label>
+                           <label class="dark-theme-label">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                 <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                              </svg>
+                              <input type="radio" name="theme-toggle" value="dark" title="Use dark theme" aria-label="Use dark theme" />
+                           </label>
+                        </div>
+                     </astro-island>
+                  </div>
                </div>
             </nav>
          </aside>
@@ -217,6 +272,18 @@
       </footer>
       <script>
          window.onload = function() {
+            var lightThemeLabel = document.querySelector('.light-theme-label');
+            var darkThemeLabel = document.querySelector('.dark-theme-label');
+
+            lightThemeLabel.addEventListener('click', function() {
+               localStorage.setItem("theme", "light")
+               document.documentElement.classList.remove("theme-dark");
+            });
+
+            darkThemeLabel.addEventListener('click', function() {
+               localStorage.setItem("theme", "dark")
+               document.documentElement.classList.add("theme-dark");
+            });
             if (location.href.endsWith("/index.html")) {
                location.href = location.href.replace("/index.html", "/")
             }
