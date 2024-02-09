@@ -55,7 +55,7 @@
                </astro-island>
             </div>
             <div class="logo flex astro-TZKREXCX">
-               <a href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/" class="astro-TZKREXCX">
+               <a href="/docs/pepsi-user-interface/introduction" class="astro-TZKREXCX">
                   <img src="../../../assets/pepsi🤑.png" alt="pepsi" class="logo" width="64" height="64" viewBox="0 0 24 24" fill="none">
                   <h1 class="astro-TZKREXCX">Pepsi Documentation</h1>
                </a>
@@ -82,13 +82,13 @@
                         <h2 class="astro-X2RMUDZS">Configuration</h2>
                         <ul class="astro-X2RMUDZS">
                            <li class="nav-link astro-X2RMUDZS">
-                              <a href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/" class="astro-X2RMUDZS">Introduction</a>
+                              <a href="/docs/pepsi-user-interface/introduction" class="astro-X2RMUDZS">Introduction</a>
                            </li>
                            <li class="nav-link astro-X2RMUDZS">
-                              <a href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/library" class="astro-X2RMUDZS">The Library</a>
+                              <a href="/docs/pepsi-user-interface/library" class="astro-X2RMUDZS">The Library</a>
                            </li>
                            <li class="nav-link astro-X2RMUDZS">
-                              <a href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/windows" class="astro-X2RMUDZS">Windows</a>
+                              <a href="/docs/pepsi-user-interface/windows" class="astro-X2RMUDZS">Windows</a>
                            </li>
                         </ul>
                      </div>
@@ -98,10 +98,10 @@
                         <h2 class="astro-X2RMUDZS">UI Components</h2>
                         <ul class="astro-X2RMUDZS">
                            <li class="nav-link astro-X2RMUDZS">
-                              <a href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/interactive-elements" class="astro-X2RMUDZS">Interactive Elements</a>
+                              <a href="/docs/pepsi-user-interface/interactive-elements" class="astro-X2RMUDZS">Interactive Elements</a>
                            </li>
                            <li class="nav-link astro-X2RMUDZS">
-                              <a href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/signaling" class="astro-X2RMUDZS">Signaling</a>
+                              <a href="/docs/pepsi-user-interface/signaling" class="astro-X2RMUDZS">Signaling</a>
                            </li>
                         </ul>
                      </div>
@@ -111,13 +111,13 @@
                         <h2 class="astro-X2RMUDZS">Others</h2>
                         <ul class="astro-X2RMUDZS">
                            <li class="nav-link astro-X2RMUDZS">
-                              <a href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/credits" aria-current="page" class="astro-X2RMUDZS">Credits</a>
+                              <a href="/docs/pepsi-user-interface/credits" aria-current="page" class="astro-X2RMUDZS">Credits</a>
                            </li>
                            <li class="nav-link astro-X2RMUDZS">
-                              <a href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/st" class="astro-X2RMUDZS">Script Template</a>
+                              <a href="/docs/pepsi-user-interface/st" class="astro-X2RMUDZS">Script Template</a>
                            </li>
                            <li class="nav-link astro-X2RMUDZS">
-                              <a href="https://actualmasteroogway.github.io/docs/pepsi-user-interface/archive" class="astro-X2RMUDZS">Archive</a>
+                              <a href="/docs/pepsi-user-interface/archive" class="astro-X2RMUDZS">Archive</a>
                            </li>
                         </ul>
                      </div>
@@ -242,10 +242,7 @@
                var links = document.getElementsByTagName('a');
                for (var i = 0; i < links.length; i++) {
                   var link = links[i];
-                  var href = link.getAttribute('href');
-                  if (href && href.includes('https://actualmasteroogway.github.io')) {
-                        link.setAttribute('href', href.replace('https://actualmasteroogway.github.io', 'http://localhost:5500/actualmasteroogway.github.io'));
-                  }
+                  link.setAttribute('href', "/actualmasteroogway.github.io" + link.getAttribute('href'));
                }
             }
          };        

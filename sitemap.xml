@@ -6,6 +6,9 @@
         <loc>https://actualmasteroogway.github.io/docs/pepsi-user-interface/</loc>
     </url>
     <url>
+        <loc>https://actualmasteroogway.github.io/docs/pepsi-user-interface/introduction/</loc>
+    </url>
+    <url>
         <loc>https://actualmasteroogway.github.io/docs/pepsi-user-interface/library/</loc>
     </url>
     <url>
@@ -25,5 +28,17 @@
     </url>
     <url>
         <loc>https://actualmasteroogway.github.io/docs/pepsi-user-interface/archive/</loc>
+    </url>
+    <url>
+        <loc>https://actualmasteroogway.github.io/docs/synapse/</loc>
+    </url>
+    <url>
+        <loc>https://actualmasteroogway.github.io/docs/synapse/intro/introduction.html</loc>
+    </url>
+    <url>
+        <loc>https://actualmasteroogway.github.io/docs/synapse/install/installation.html</loc>
+    </url>
+    <url>
+        <loc>https://actualmasteroogway.github.io/docs/synapse/print.html</loc>
     </url>
 </urlset>

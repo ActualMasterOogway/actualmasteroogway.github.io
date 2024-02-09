@@ -1,0 +1,1969 @@
+<html lang="en" class="js sidebar-visible navy">
+    <head>
+        <meta charset="UTF-8">
+        <title>Introduction - Synapse X Documentation</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="rgba(0, 0, 0, 0)">
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="stylesheet" href="css/font-awesome.css">
+        <link rel="stylesheet" href="css/fonts/fonts.css">
+        <link rel="stylesheet" href="css/highlight.css" disabled="">
+        <link rel="stylesheet" href="css/tomorrow-night.css">
+        <link rel="stylesheet" href="css/ayu-highlight.css" disabled="">
+    </head>
+    <body>
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "coal";
+            window.onload = function() {
+                if (location.href.endsWith("/index.html")) {
+                   location.href = location.href.replace("/index.html", "/")
+                }
+                
+                if (location.href.includes('http://localhost:5500/') || location.href.includes('http://127.0.0.1:5500/')) {
+                   var links = document.getElementsByTagName('a');
+                   for (var i = 0; i < links.length; i++) {
+                      var link = links[i];
+                      link.setAttribute('href', "/actualmasteroogway.github.io" + link.getAttribute('href'));
+                   }
+                }
+            };
+        </script>
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+            
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+            
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('coal')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents" aria-hidden="false">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter">
+                <li class="chapter-item expanded affix "><a href="/docs/synapse/intro/introduction.html" tabindex="0">Introduction</a></li>
+                <li class="chapter-item expanded "><a href="/docs/synapse/install/installation.html" tabindex="0"><strong aria-hidden="true">1.</strong> Installation</a></li>
+                <li>
+                    <ol class="section">
+                        <li class="chapter-item expanded "><a href="/docs/synapse/install/whitelist_av.html" tabindex="0"><strong aria-hidden="true">1.1.</strong> Whitelisting from Anti-Virus Software</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/install/account_creation.html" tabindex="0"><strong aria-hidden="true">1.2.</strong> Creating a Synapse X Account</a></li>
+                    </ol>
+                </li>
+                <li class="chapter-item expanded "><a href="/docs/synapse/general/general_usage.html" tabindex="0"><strong aria-hidden="true">2.</strong> General Usage</a></li>
+                <li>
+                    <ol class="section">
+                        <li class="chapter-item expanded "><a href="/docs/synapse/general/ui_layout.html" tabindex="0"><strong aria-hidden="true">2.1.</strong> User Interface Layout</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/general/options.html" tabindex="0"><strong aria-hidden="true">2.2.</strong> Options</a></li>
+                    </ol>
+                </li>
+                <li class="chapter-item expanded "><a href="/docs/synapse/development/dev_introduction.html" tabindex="0"><strong aria-hidden="true">3.</strong> Developing Scripts</a></li>
+                <li>
+                    <ol class="section">
+                        <li class="chapter-item expanded "><a href="/docs/synapse/development/script_env.html" tabindex="0"><strong aria-hidden="true">3.1.</strong> Intro to the Script Environment</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/development/objects_mts.html" tabindex="0"><strong aria-hidden="true">3.2.</strong> Objects and Metatables</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/development/newcclosure.html" tabindex="0"><strong aria-hidden="true">3.3.</strong> Importance of Newcclosure</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/development/metamethod_hook_examples.html" tabindex="0"><strong aria-hidden="true">3.4.</strong> Metamethod Hook Examples</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/development/function_hooks.html" tabindex="0"><strong aria-hidden="true">3.5.</strong> Function Hooks</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/development/decompiler.html" tabindex="0"><strong aria-hidden="true">3.6.</strong> Using the Decompiler</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/development/debug_api.html" tabindex="0"><strong aria-hidden="true">3.7.</strong> Using the Debug API</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/development/filesystem_api.html" tabindex="0"><strong aria-hidden="true">3.8.</strong> Filesystem APIs</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/development/web_api.html" tabindex="0"><strong aria-hidden="true">3.9.</strong> Web APIs</a></li>
+                    </ol>
+                </li>
+                <li class="chapter-item expanded "><a href="/docs/synapse/reference/ref_introduction.html" tabindex="0"><strong aria-hidden="true">4.</strong> API Reference</a></li>
+                <li>
+                    <ol class="section">
+                        <li class="chapter-item expanded "><a href="/docs/synapse/reference/environment.html" tabindex="0"><strong aria-hidden="true">4.1.</strong> Environment Functions</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/reference/script.html" tabindex="0"><strong aria-hidden="true">4.2.</strong> Script Functions</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/reference/table.html" tabindex="0"><strong aria-hidden="true">4.3.</strong> Table Functions</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/reference/input.html" tabindex="0"><strong aria-hidden="true">4.4.</strong> Input Functions</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/reference/hooking.html" tabindex="0"><strong aria-hidden="true">4.5.</strong> Hooking Functions</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/reference/reflection.html" tabindex="0"><strong aria-hidden="true">4.6.</strong> Reflection Functions</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/reference/console.html" tabindex="0"><strong aria-hidden="true">4.7.</strong> Console Functions</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/reference/filesystem.html" tabindex="0"><strong aria-hidden="true">4.8.</strong> Filesystem Functions</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/reference/misc.html" tabindex="0"><strong aria-hidden="true">4.9.</strong> Miscellaneous Functions</a></li>
+                        <li class="chapter-item expanded "><a href="/docs/synapse/reference/libraries.html" tabindex="0"><strong aria-hidden="true">4.10.</strong> Libraries</a></li>
+                        <li>
+                            <ol class="section">
+                            <li class="chapter-item expanded "><a href="/docs/synapse/reference/bit_lib.html" tabindex="0"><strong aria-hidden="true">4.10.1.</strong> Bit Library</a></li>
+                            <li class="chapter-item expanded "><a href="/docs/synapse/reference/crypt_lib.html" tabindex="0"><strong aria-hidden="true">4.10.2.</strong> Crypt Library</a></li>
+                            <li class="chapter-item expanded "><a href="/docs/synapse/reference/debug_lib.html" tabindex="0"><strong aria-hidden="true">4.10.3.</strong> Debug Library</a></li>
+                            <li class="chapter-item expanded "><a href="/docs/synapse/reference/drawing_lib.html" tabindex="0"><strong aria-hidden="true">4.10.4.</strong> Drawing Library</a></li>
+                            <li class="chapter-item expanded "><a href="/docs/synapse/reference/syn_lib.html" tabindex="0"><strong aria-hidden="true">4.10.5.</strong> Syn Library</a></li>
+                            <li class="chapter-item expanded "><a href="/docs/synapse/reference/websocket_lib.html" tabindex="0"><strong aria-hidden="true">4.10.6.</strong> Websocket Library</a></li>
+                            </ol>
+                        </li>
+                    </ol>
+                </li>
+                <li class="chapter-item expanded "><a href="/docs/synapse/credits/credits.html" tabindex="0"><strong aria-hidden="true">5.</strong> Credits</a></li>
+                </ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+        <div id="page-wrapper" class="page-wrapper">
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                        <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    <h1 class="menu-title">Synapse X Documentation</h1>
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults"></ul>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+                        <p><strong>Synapse X</strong> is a powerful, easy to use scripting engine. Synapse X allows for unparalleled speed, stability, and compatibility with <em>all</em> scripts made for it due to our state of the art <em><strong>slua</strong></em> ('Synapse Lua') engine. We will be showing specific features of slua later on in this guide.</p>
+                        <p>This guide will show you how to make your own scripts for Synapse X, then provide documentation for any future projects you make.</p>
+                        <p>Before any of that though, lets first <a href="intro/./../install/installation.html">install Synapse X</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
+                        <p>After you purchase Synapse X, you will get an email with your <em>serial key</em>. Its important you do not share this key or someone could steal your license. An example email is shown below:</p>
+                        <p><img src="install/assets/license_email.png" alt="License Email Example"/></p>
+                        <p>We now want to download the Synapse X client. You can download it by going to <a href="https://x.synapse.to/">https://x.synapse.to/</a> and downloading &amp; extracting the zip file from there. We will now whitelist the folder from anti-virus detections, which could cause issues later on if we do not do so.</p>
+                        <p>Proceed to <a href="install/./whitelist_av.html">whitelisting from anti-virus software</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="whitelisting-from-anti-virus-software"><a class="header" href="#whitelisting-from-anti-virus-software">Whitelisting from Anti-Virus Software</a></h1>
+                        <p>Unfortunately, anti-virus software has always been a problem for Synapse X to the nature of how it works - Synapse X uses techniques that are also commonly used by malicious programs, which causes false positives in anti-virus software.</p>
+                        <p>We will be showing you how to whitelist Synapse X's folder in Windows Defender, which is the most commonly found anti-virus on Windows machines. If you use a different anti-virus (Norton, Malwarebytes, etc.) whitelist the Synapse X folder then proceed to the <a href="install/./account_creation.html">creating your Synapse X account</a> step. If not though, follow the instructions below.</p>
+                        <p>First, go to the 'Windows Security' app from the start menu.</p>
+                        <p><img src="install/assets/windows_security.png" alt="Windows Security"/></p>
+                        <p>Next, go to the 'Virus &amp; threat protection' tab.</p>
+                        <p><img src="install/assets/virus_threat_menu.png" alt="Virus and Threat Protection"/></p>
+                        <p>Click on 'Manage settings'.</p>
+                        <p><img src="install/assets/manage_settings.png" alt="Manage Settings"/></p>
+                        <p>Now, scroll down to 'Add or remove exclusions'.</p>
+                        <p><img src="install/assets/add_exclusion_menu.png" alt="Add or Remove Exclusions"/></p>
+                        <p>Finally, click 'Add an exclusion', 'Folder', and select the directory that we extracted from the zip file earlier.</p>
+                        <p><img src="install/assets/add_exclusion.png" alt="Add Exclusion"/></p>
+                        <p>You have now successfully whitelisted the Synapse X folder from Windows Defender. We can now move on to actually <a href="install/./account_creation.html">installing Synapse X</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="creating-a-synapse-x-account"><a class="header" href="#creating-a-synapse-x-account">Creating a Synapse X Account</a></h1>
+                        <p>To start, we can now open '<code>Synapse X.exe</code>' and accept the prompt to install Synapse X in this directory.</p>
+                        <p>After the initial loading phase, you should now see a login screen. We do not have an account yet, so click on 'Register'.</p>
+                        <p><img src="install/assets/register_button.png" alt="Register Button"/></p>
+                        <p>We can now fill in our registration information - email address, username, password, and the serial key that you got in your purchase email.</p>
+                        <p><strong>IMPORTANT</strong>: Make sure you enter a real email address for the email field! Do not use temporary mail services, as the only way to recover your Synapse X account in case you lose it is via the email you initially entered.</p>
+                        <p>After you verified all the information you entered is correct, click on 'Register'. It might take a few seconds to register your account - a success screen should appear if you did all the previous steps correctly.</p>
+                        <p>Installation of Synapse X after this point may take a few minutes depending on your internet speed, as Synapse X has to download files required for its execution.</p>
+                        <p>If everything went well, you can move on to <a href="install/./../general/general_usage.html">general usage</a>. If not, read the troubleshooting section below.</p>
+                        <h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+                        <p>If you get an error when you click register, it usually is because you either already have an account registered (in that case, just login with the account you already made), or you have an invalid serial key. Make sure you buy a Synapse X key from official sources (<a href="https://x.synapse.to/">https://x.synapse.to</a>) to prevent the latter from occurring.</p>
+                        <p>If you get a stuck grey screen after Synapse X gets to '<code>Ready</code>', install the following update files below &amp; the issue should fix itself:</p>
+                        <p><a href="https://aka.ms/vs/16/release/vc_redist.x86.exe">File #1</a></p>
+                        <p><a href="https://aka.ms/vs/16/release/vc_redist.x64.exe">File #2</a></p>
+                        <p>A variety of other issues have fixes on the <a href="https://docs.google.com/document/d/1cPYeVVJiVilvnr80crDe4apRYHuwMlz0w17dsPuV3fI/edit">FAQ document</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="general-usage"><a class="header" href="#general-usage">General Usage</a></h1>
+                        <p>This section will cover general usage of Synapse X - outlining specific features you can use within the Synapse X user interface &amp; options you can enable or disable.</p>
+                        <p>First, lets check out the <a href="general/./ui_layout.html">layout of the Synapse X user interface</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="synapse-x-user-interface"><a class="header" href="#synapse-x-user-interface">Synapse X User Interface</a></h1>
+                        <p>The Synapse X user interface was designed to be easy to use, but have powerful features to make your experience better. The picture below shows the main user interface and its features.</p>
+                        <h2 id="execution-tab"><a class="header" href="#execution-tab">Execution Tab</a></h2>
+                        <p><img src="general/assets/ui_layout.png" alt="Synapse X UI"/></p>
+                        <p>The <em>Tab Controller</em> allows you to have multiple scripts open at once within the Synapse X UI. It also has some useful features - if you open a file (with either the <code>Open File</code> button or <code>Ctrl+O</code>) &amp; then edit the file in the editor, a star will appear to show you that you have modified the file from its original contents.</p>
+                        <p><img src="general/assets/tab_star.png" alt="Tab Star Example"/></p>
+                        <p>You can then press <code>Ctrl+S</code> to save the file back to disk.</p>
+                        <p>Synapse X also has the feature of 'Quick Scripts' - you can place any script into the <code>scripts</code> folder within your Synapse X installation and it will automatically appear within the UI. You can then right click to either execute the script or load it into the editor.</p>
+                        <p><img src="general/assets/quick_scripts.png" alt="Quick Scripts Example"/></p>
+                        <p>There is also the <code>autoexec</code> folder, which will automatically be executed whenever you attach Synapse X or are teleported while attached. This is useful for custom global functions &amp; other scripts you always want to be executed when you attach.</p>
+                        <h2 id="options-tab"><a class="header" href="#options-tab">Options Tab</a></h2>
+                        <p>The options tab allows you to configure a multitude of settings for Synapse X, which will be explained in the <a href="general/./options.html">next page</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="synapse-x-options"><a class="header" href="#synapse-x-options">Synapse X Options</a></h1>
+                        <p>The options tab allows you to set a variety of settings in Synapse X, which allow for certain special features or protections.</p>
+                        <p><img src="general/assets/settings_tab.png" alt="Options Tab"/></p>
+                        <h2 id="unlock-fps"><a class="header" href="#unlock-fps">Unlock FPS</a></h2>
+                        <p>The <code>Unlock FPS</code> option will unlock the FPS of the client from 60 to your monitors refresh rate. This is extremely useful on 120/144/240hz monitors which easily could support higher framerates, and makes the game look much more clean.</p>
+                        <h2 id="autolaunchautoattach"><a class="header" href="#autolaunchautoattach">AutoLaunch/AutoAttach</a></h2>
+                        <p>AutoLaunch and AutoAttach are two separate options that serve similar purposes - they automate the attaching process for you.</p>
+                        <p><strong>AutoAttach</strong> will simply attach Synapse X whenever you have the UI open. This is more simple &amp; sometimes works better on certain machines, but the AutoLaunch option has massive benefits over the AutoAttach option which will be shown below.</p>
+                        <p><strong>AutoLaunch</strong> does something different - instead of attaching Synapse X whenever you have the UI open, it will actually replace the launcher with a custom one made by Synapse X.</p>
+                        <h2 id="internal-ui"><a class="header" href="#internal-ui">Internal UI</a></h2>
+                        <p>Internal UI allows a pretty neat feature - an internal user interface within the game itself. You can simply press the <code>INSERT</code> key on your keyboard when this is activated in order to pop up the UI. If you use this feature, the AutoLaunch option will allow you to not open the regular UI and simply use the internal one if you like.</p>
+                        <h2 id="close-fileclear-confirmation"><a class="header" href="#close-fileclear-confirmation">Close File/Clear Confirmation</a></h2>
+                        <p>These are two simple but useful options which protect against accidental clearing/closing of scripts in your tab controller. Synapse X will prompt you before doing those actions if enabled.</p>
+                        <p><img src="general/assets/clear_confirm.png" alt="Clear Confirmation"/></p>
+                        <h2 id="legacy-ui"><a class="header" href="#legacy-ui">Legacy UI</a></h2>
+                        <p>Some users prefer an older UI style that allows for greater theming &amp; customization, and allows resizing of the window.</p>
+                        <h2 id="editor-theme"><a class="header" href="#editor-theme">Editor Theme</a></h2>
+                        <p>This allows you to customize the theme used in the script editor. Pick one that suits you.</p>
+                        <h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+                        <p>This concludes the general user guide for Synapse X. If you want to develop your own scripts, go to the <a href="general/./../development/dev_introduction.html">development introduction</a>. If not, we hope you enjoy Synapse X and all the features it has to offer!</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="developing-for-synapse-x"><a class="header" href="#developing-for-synapse-x">Developing for Synapse X</a></h1>
+                        <p>We will now be showing how you can make your own scripts for Synapse X. Please note the following things though before we begin:</p>
+                        <ul>
+                            <li>This development guide assumes you already have knowledge of the Lua programming language. If this is your first time scripting in Lua, we suggest reading the <a href="https://www.lua.org/manual/5.1/">Lua 5.1 manual</a> before this.</li>
+                            <li>We will be covering some very advanced topics here in this guide. We will try to explain these in the simplest terms possible, but some cannot be explained without full detail.</li>
+                        </ul>
+                        <p>Lets now start off with the <a href="development/./script_env.html">script environment</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="introduction-to-the-script-environment"><a class="header" href="#introduction-to-the-script-environment">Introduction to the Script Environment</a></h1>
+                        <p>We will first learn about certain changes from normal Lua that Synapse X has and how it can affect your scripts.</p>
+                        <h2 id="script-identity"><a class="header" href="#script-identity">Script Identity</a></h2>
+                        <p>Normal game scripts run at identity 2 - we can see this if we run <code>printidentity()</code> in a LocalScript.</p>
+                        <p>On the other hand, Synapse X scripts run at identity 7, which allows <em>vastly</em> more access than a normal identity 2 script. Some examples of extended access include:</p>
+                        <ul>
+                            <li>Access to <code>game:GetService(&quot;CoreGui&quot;)</code>, a safe place to put user interfaces that is hard to detect by game scripts.</li>
+                            <li>Access to restricted functions (<code>game:HttpGet</code>, <code>game:GetObjects</code>, etc.) that allow for extended functionality that is not possible on normal game scripts.</li>
+                            <li>Access to supervise other scripts - this will be <em>very</em> important later on in the guide.</li>
+                        </ul>
+                        <p>Synapse X also has a large set of API functions that allow you even more access &amp; convenience. We will be extensively using them later on when we start to create scripts.</p>
+                        <h2 id="the-script-global"><a class="header" href="#the-script-global">The <code>script</code> global</a></h2>
+                        <p>Normally, LocalScripts are given a <code>script</code> global that allows access to children of the script/other properties. While Synapse X scripts are given a <code>script</code> global, its mostly fake - doing <code>script.Disabled = true</code> will not do anything for example on Synapse X.</p>
+                        <p>Its <strong>highly recommended</strong> you never touch the <code>script</code> global on Synapse X as it can cause various security problems with your scripts.</p>
+                        <h2 id="shared_g"><a class="header" href="#shared_g"><code>shared</code>/<code>_G</code></a></h2>
+                        <p>When Synapse X is attached, it will create a new <code>shared</code>/<code>_G</code> table instead of using the one already defined for other scripts. If you want to get the original <code>shared</code>/<code>_G</code>, use the <code>getrenv</code> function and index <code>shared</code>/<code>_G</code> from there. <strong>Please be careful</strong> doing this though, as a clever game script developer could set 'traps' with metatables to foil this. We will explain how to bypass these checks later on in this guide.</p>
+                        <p>Lets now move onto <a href="development/./objects_mts.html">objects and metatables</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="objects-and-metatables"><a class="header" href="#objects-and-metatables">Objects and Metatables</a></h1>
+                        <p>When you create an instance with <code>Instance.new</code>, internally it creates an 'Object'. Every instance in the game is an object - <code>game</code>, <code>workspace</code>, <code>game:GetService(&quot;ReplicatedStorage&quot;)</code>, or any other instance is an object. There is a cool thing with all of these objects though - they all <strong>have the same metatable</strong>.</p>
+                        <p>You may be asking - <em>what is a metatable</em>? Fear not, as we will now be diving deep into how metatables work and why they are so important for development with Synapse X.</p>
+                        <h2 id="metatables"><a class="header" href="#metatables">Metatables</a></h2>
+                        <p>Metatables serve an extremely important purpose in both Lua and Synapse X - they allow for logic to be put behind regular tables, allowing for powerful programming constructs that are extensively used throughout the game engine.</p>
+                        <p>But for Synapse X, they allow something even more powerful - lets look at an example script and explain the process of how it executes:</p>
+                        <pre><code class="language-lua">print(game:GetService(&quot;Players&quot;).LocalPlayer.Character)
+</code></pre>
+                        <p><img src="development/assets/character_flow_graph.png" alt="Lua Flow Graph"/></p>
+                        <p>We will take a particular look at the blocks highlighted in blue - those are <em>metamethod calls</em>, and Synapse X has a special feature for metamethod calls - we can <strong>hook them</strong>.</p>
+                        <h2 id="metamethod-hooking"><a class="header" href="#metamethod-hooking">Metamethod Hooking</a></h2>
+                        <p>Metamethods are a particular feature of metatables which allow <em>Lua functions</em> to be called when someone tries to do certain operations with our metatable. We will be using that fact to replace the function used for the <strong>object metatable</strong>.</p>
+                        <h3 id="simple-metamethod-hook"><a class="header" href="#simple-metamethod-hook">Simple metamethod hook</a></h3>
+                        <p>The following script is the base script used for metamethod hooking on Synapse X. We will explain this script line by line.</p>
+                        <pre><code class="language-lua">local OldIndex = nil
+local OldNameCall = nil
+
+OldIndex = hookmetamethod(game, &quot;__index&quot;, newcclosure(function(...)
+    local Self, Key = ...
+    return OldIndex(...)
+end))
+
+OldNameCall = hookmetamethod(game, &quot;__namecall&quot;, newcclosure(function(...)
+    local Self = ...
+    local NamecallMethod = getnamecallmethod()
+
+    return OldNameCall(...)
+end))
+</code></pre>
+                        <pre><code class="language-lua">local OldIndex = nil
+local OldNameCall = nil
+</code></pre>
+                        <p>This declares the original functions we will call later.</p>
+                        <pre><code class="language-lua">OldIndex = hookmetamethod(game, &quot;__index&quot;, newcclosure(function(...)
+    local Self, Key = ...
+    return OldIndex(...)
+end))
+</code></pre>
+                        <p>This has three parts - the <code>hookmetamethod</code> call, the <code>newcclosure</code> call, and the actual hook itself. This hooks the <code>__index</code> metamethod, which is called whenever someone indexes a object. (<code>game.Workspace</code> for example)</p>
+                        <p>Its also <em><strong>really important</strong></em> to declare these functions as vararg and pass their arguments as such, or detection methods can arise.</p>
+                        <pre><code class="language-lua">OldNameCall = hookmetamethod(game, &quot;__namecall&quot;, newcclosure(function(...)
+    local Self = ...
+    local NamecallMethod = getnamecallmethod()
+
+    return OldNameCall(...)
+end))
+</code></pre>
+                        <p>This is the same as the above hook, but will replace <code>__namecall</code>, which is used for calls with self. (<code>game:GetService(&quot;Workspace&quot;)</code> for example)</p>
+                        <p>The <code>getnamecallmethod</code> call is needed so we can get the function name which we will use later in this tutorial. (in the above case, <code>NamecallMethod</code> would be <code>GetService</code>)</p>
+                        <p>We will now be taking a detour to explain <a href="development/./newcclosure.html">how newcclosure works</a>, which is important to understand for later parts of this tutorial.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="importance-of-newcclosure"><a class="header" href="#importance-of-newcclosure">Importance of <code>Newcclosure</code></a></h1>
+                        <p><code>Newcclosure</code> is a very important function in Synapse X, which we will be explaining to make sure you use it correctly.</p>
+                        <p>You may be asking, &quot;why is <code>newcclosure</code> so important?&quot;, and there is a simple answer - <strong>not using <code>newcclosure</code> opens you up to a multitude of detection vectors</strong>.</p>
+                        <h2 id="detecting-metatable-hooks"><a class="header" href="#detecting-metatable-hooks">Detecting metatable hooks</a></h2>
+                        <p>Smart game script developers back at the time when metamethod hooks were first starting to be popular had a good idea of how to detect them - check the call-stack for suspicious environments that indicate metamethod hooks are present.</p>
+                        <p>The general way to do this was via the <code>xpcall</code> function and forcing an error within the original function that was called by the hook. An example of this technique is described below:</p>
+                        <pre><code class="language-lua">local Env = getfenv()
+
+xpcall(function()
+    return game:_____()
+end, function()
+    for i = 0, 10 do
+        if getfenv(i) ~= Env then
+            warn(&quot;Detected metamethod tampering!&quot;)
+        end
+    end
+end)
+</code></pre>
+                        <p><code>newcclosure</code> will make sure that Synapse X functions are not on the <code>xpcall</code> call-stack, protecting you from this attack.</p>
+                        <p>There was also the method of checking error messages for changes - this was also popularly used back at the start of popularity for metatable hooks.</p>
+                        <pre><code class="language-lua">local OldErr, OldMsg = pcall(function() return game:____() end)
+
+while wait(1) do
+    local Err, Msg = pcall(function() return game:____() end)
+
+    if OldErr ~= Err or OldMsg ~= Msg then
+        warn(&quot;Detected metamethod tampering!&quot;)
+    end
+end
+</code></pre>
+                        <p><code>newcclosure</code> will make sure this attack does not happen either.</p>
+                        <p>In short, <strong>always</strong> use newcclosure for both metamethod hooks and function hooks, which we will now to go back to.</p>
+                        <p>For now, lets go back to <a href="development/./metamethod_hook_examples.html">metamethod hook examples</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="metamethod-hook-examples"><a class="header" href="#metamethod-hook-examples">Metamethod Hook Examples</a></h1>
+                        <p>Lets now expand on the example script that we were shown in 3.2 and add some actual functionality for it.</p>
+                        <pre><code class="language-lua">local LocalPlayer = game:GetService(&quot;Players&quot;).LocalPlayer
+local OldIndex = nil
+
+OldIndex = hookmetamethod(game, &quot;__index&quot;, function(Self, Key)
+    if not checkcaller() and Self == LocalPlayer and Key == &quot;Character&quot; then
+        return nil
+    end
+
+    return OldIndex(Self, Key)
+end)
+</code></pre>
+                        <p>Let us now explain the new lines we added.</p>
+                        <pre><code class="language-lua">local LocalPlayer = game:GetService(&quot;Players&quot;).LocalPlayer
+</code></pre>
+                        <p>This will grab the LocalPlayer for later on in the script.</p>
+                        <pre><code class="language-lua">if not checkcaller() and Self == LocalPlayer and Key == &quot;Character&quot; then
+    return nil
+end
+</code></pre>
+                        <p>This line has a few checks, but most importantly a call to <code>checkcaller</code>. <code>checkcaller</code> allows you to see if the thread calling your hook is a Synapse X thread or not, and modify its behavior based on that. This is <em>really important</em> for many hooks, as most of the time you do not want a hook to be executed if on a Synapse X thread.</p>
+                        <p>If that check passes (not a Synapse X thread), we then check if they were trying to index a LocalPlayer with the field <code>Character</code>, then return nil.</p>
+                        <p>Lets now try that script that we previously explained on the metatables page:</p>
+                        <pre><code class="language-lua">print(game:GetService(&quot;Players&quot;).LocalPlayer.Character)
+</code></pre>
+                        <p>If we execute it within a game LocalScript, we get the result we wished:</p>
+                        <p><img src="development/assets/nil_console.png" alt="Nil in Console"/></p>
+                        <p>Voila! We have successfully intercepted a metamethod index and replaced it with our own values. The possibilities that we can do with this now are near limitless.</p>
+                        <h2 id="__namecall-hook-examples"><a class="header" href="#__namecall-hook-examples"><code>__namecall</code> Hook Examples</a></h2>
+                        <p>Lets now do a hook for the <code>__namecall</code> method, based on the same script as before.</p>
+                        <pre><code class="language-lua">local ReplicatedStorage = game:GetService(&quot;ReplicatedStorage&quot;)
+local OldNameCall = nil
+
+OldNameCall = hookmetamethod(game, &quot;__namecall&quot;, function(Self, ...)
+    local Args = {...}
+    local NamecallMethod = getnamecallmethod()
+
+    if not checkcaller() and Self == game and NamecallMethod == &quot;GetService&quot; and Args[1] == &quot;Workspace&quot; then
+        return ReplicatedStorage
+    end
+
+    return OldNameCall(Self, ...)
+end)
+</code></pre>
+                        <p>Let us now explain the new lines we added.</p>
+                        <pre><code class="language-lua">local ReplicatedStorage = game:GetService(&quot;ReplicatedStorage&quot;)
+</code></pre>
+                        <p>This will grab the ReplicatedStorage service for later on in the script.</p>
+                        <pre><code class="language-lua">local Args = {...}
+</code></pre>
+                        <p>This will get a list of arguments to the function called.</p>
+                        <pre><code class="language-lua">if not checkcaller() and Self == game and NamecallMethod == &quot;GetService&quot; and Args[1] == &quot;Workspace&quot; then
+    return ReplicatedStorage
+end
+</code></pre>
+                        <p>The same <code>checkcaller</code> check applies here, but we have a few more checks within this conditional:</p>
+                        <ul>
+                            <li>The <code>Self == game</code> check will make sure the object passed is <code>game</code> (this prevents someone from doing <code>workspace:GetService(&quot;Workspace&quot;)</code> and getting the hooked result)</li>
+                            <li>The <code>NamecallMethod == &quot;GetService&quot;</code> check will make sure the function being called is <code>GetService</code>.</li>
+                            <li>The <code>Args[1] == &quot;Workspace&quot;</code> check will make sure the first argument passed is <code>Workspace</code>.</li>
+                        </ul>
+                        <p>If all of those conditions pass, we return ReplicatedStorage instead of Workspace.</p>
+                        <p>Lets run an example script to show this</p>
+                        <pre><code class="language-lua">print(game:GetService(&quot;Workspace&quot;))
+</code></pre>
+                        <p>If we execute it within a game LocalScript, we get the result we wanted again:</p>
+                        <p><img src="development/assets/repstorage_console.png" alt="Nil in Console"/></p>
+                        <p>Lets now move on to <a href="development/./function_hooks.html">function hooking</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="function-hooks"><a class="header" href="#function-hooks">Function Hooks</a></h1>
+                        <p>While metamethod hooks may be very useful, there is also situations where we want to directly hook functions as well. An example of this might be <code>FireServer</code>, where some game scripts cache the result from <code>__index</code> at boot to prevent metamethod hooks from working.</p>
+                        <p>The old method to bypass this was to have your script run very early (i.e before the game loads), but now we have better methods to allow this.</p>
+                        <p>Lets show an example of function hooking and explain each line.</p>
+                        <pre><code class="language-lua">local OldFireServer
+OldFireServer = hookfunction(Instance.new'RemoteEvent'.FireServer, newcclosure(function(Event, ...)
+    return OldFireServer(Event, ...)
+end))
+</code></pre>
+                        <pre><code class="language-lua">local OldFireServer
+</code></pre>
+                        <p>This will declare a local that will be used to store the original <code>FireServer</code> function. You need to declare this a line before your <code>hookfunction</code> call as this local will become an upvalue in the resulting hook.</p>
+                        <pre><code class="language-lua">OldFireServer = hookfunction(Instance.new'RemoteEvent'.FireServer, newcclosure(function(Event, ...)
+    return OldFireServer(Event, ...)
+end))
+</code></pre>
+                        <p>This will actually hook the <code>FireServer</code> function with the function returned from <code>newcclosure</code>, and set the original function into the <code>OldFireServer</code> variable.</p>
+                        <p><strong>Note</strong>: <code>hookfunction</code> will automatically convert the hook you pass into <code>newcclosure</code>'d form, meaning it isn't required for you to call <code>newcclosure</code>. It is still good form to do so, though.
+                            <strong>Important Note</strong>: <em>Never</em> call hookfunction with a metamethod, as it can cause instability issues. Always use the technique shown in <a href="development/./metamethod_hook_examples.html">metamethod hooks</a> instead.
+                        </p>
+                        <h3 id="function-hooking-examples"><a class="header" href="#function-hooking-examples">Function Hooking Examples</a></h3>
+                        <p>Lets expand our FireServer hook to act as a RemoteEvent logger:</p>
+                        <pre><code class="language-lua">local OldFireServer
+OldFireServer = hookfunction(Instance.new'RemoteEvent'.FireServer, newcclosure(function(Event, ...)
+    if not checkcaller() then
+        local Args = {...}
+
+        print(Event)
+        for I, V in pairs(Args) do
+            print(V)
+        end
+    end
+
+    return OldFireServer(Event, ...)
+end))
+</code></pre>
+                        <p>This will now print out the event who called FireServer and the arguments passed to it whenever it is called.</p>
+                        <p><img src="development/assets/test_event.png" alt="FireServer Hook Printout"/></p>
+                        <p>Lets now show how to use the <a href="development/./decompiler.html">Synapse X Decompiler</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="using-the-decompiler"><a class="header" href="#using-the-decompiler">Using the Decompiler</a></h1>
+                        <p>Synapse X includes another powerful tool to help you develop scripts - the <strong>decompiler</strong>. The decompiler allows you to see the full Lua source code of any game LocalScript or ModuleScript, allowing you to easily understand how a game works.</p>
+                        <p>To start, you can execute the <strong>Script Dumper</strong> from the Synapse X Script Hub. After that, it may take 5-10 minutes for all scripts on the game to decompiled, which will then be placed in your Synapse X <code>workspace</code> folder. You can then open up the file and take a look at all game scripts.</p>
+                        <p>An example of a decompiled script is shown below:</p>
+                        <pre><code class="language-lua">-- Decompiled with the Synapse X Luau decompiler.
+
+function CreateGui()
+	local v1 = Instance.new(&quot;ScreenGui&quot;);
+	local v2 = Instance.new(&quot;Frame&quot;);
+	local v3 = Instance.new(&quot;Frame&quot;);
+	local v4 = Instance.new(&quot;TextLabel&quot;);
+	local v5 = Instance.new(&quot;TextBox&quot;);
+	local v6 = Instance.new(&quot;Frame&quot;);
+	local v7 = Instance.new(&quot;Frame&quot;);
+	local v8 = Instance.new(&quot;TextButton&quot;);
+	local v9 = Instance.new(&quot;TextLabel&quot;);
+	local v10 = Instance.new(&quot;TextLabel&quot;);
+	local v11 = Instance.new(&quot;ImageLabel&quot;);
+	local v12 = Instance.new(&quot;Frame&quot;);
+	local v13 = Instance.new(&quot;Frame&quot;);
+</code></pre>
+                        <p>You may notice that decompiled output looks a lot different from the original source of that script - this is because of debugging information being irrevocably lost during the compilation process. Synapse does its best to make the decompiled source look as good as possible, but unfortunately decompilation is mostly a guessing game, which will inevitably lead to differences in the decompiled output.</p>
+                        <p>If you find specific issues within the decompiler, we would recommend you report them via our Bug Report category on <a href="https://synapsesupport.io/">our support site</a>.</p>
+                        <p>Nonetheless, the decompiler is a powerful tool in your arsenal, which we will put to use in our next section, <a href="development/./debug_api.html">using the debug API</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="using-the-debug-api"><a class="header" href="#using-the-debug-api">Using the Debug API</a></h1>
+                        <p>We still haven't covered one of the most important APIs within Synapse - the <code>debug</code> API. The <code>debug</code> API allows full control over the execution state of any running script, which we will now explain how to use.</p>
+                        <h2 id="debugupvalues"><a class="header" href="#debugupvalues"><code>debug.*upvalue(s)</code></a></h2>
+                        <p>We will first be explaining the most simple (but arguably the most used) function within the <code>debug</code> API - the upvalue functions.</p>
+                        <p>You might be asking, <em>what is a upvalue</em>? An upvalue is a local variable that is used in more than 1 function. See an example below of an upvalue:</p>
+                        <pre><code class="language-lua">local TestVariable = &quot;Hello, world!&quot;
+
+local function Test()
+    print(TestVariable)
+    TestVariable = &quot;Still - Hello, world!&quot;
+    print(TestVariable)
+end
+
+Test()
+</code></pre>
+                        <p>The <code>TestVariable</code> is an upvalue within the <code>Test</code> function. We can grab and modify that variable with the <code>debug.setupvalue</code> function.</p>
+                        <p>An example of this is shown below:</p>
+                        <pre><code class="language-lua">local TestVariable = &quot;Hello, world!&quot;
+
+local function Test()
+    print(TestVariable)
+    TestVariable = &quot;Still - Hello, world!&quot;
+    print(TestVariable)
+end
+
+debug.setupvalue(Test, 1, &quot;Hello, modified world!&quot;)
+Test()
+</code></pre>
+                        <p>Instead of printing <code>&quot;Hello, world!&quot;</code> followed by <code>&quot;Still - Hello, world!&quot;</code> as it normally would, it instead prints <code>Hello, modified world!</code> first!</p>
+                        <h3 id="call-stack-levels"><a class="header" href="#call-stack-levels">Call-stack Levels</a></h3>
+                        <p>You can also call the full set of <code>debug</code> functions with a function level instead of the function itself, just like <code>getfenv</code>/<code>setfenv</code>.</p>
+                        <pre><code class="language-lua">local TestVariable = &quot;Hello, world!&quot;
+
+local function Test()
+    local function InnerFunction()
+        --2 refers to the Test function
+        debug.setupvalue(2, 1, &quot;Hello, modified world!&quot;)
+    end
+
+    InnerFunction()
+
+    print(TestVariable)
+    TestVariable = &quot;Still - Hello, world!&quot;
+    print(TestVariable)
+end
+
+Test()
+</code></pre>
+                        <p>This will produce the same results as the above script.</p>
+                        <h2 id="debugconstants"><a class="header" href="#debugconstants"><code>debug.*constants</code></a></h2>
+                        <p>We will next be explaining the constant functions, which can be used to get/modify the constant values within a script.</p>
+                        <p>An example is provided below:</p>
+                        <pre><code class="language-lua">local TestVariable = &quot;Hello, world!&quot;
+
+local function Test()
+    print(TestVariable)
+    TestVariable = &quot;Still - Hello, world!&quot;
+    print(TestVariable)
+end
+
+debug.setconstant(Test, 2, &quot;Modified - Hello, world!&quot;)
+Test()
+</code></pre>
+                        <p>This will print out <code>&quot;Hello, world!&quot;</code> proceeded by <code>&quot;Modified - Hello world!&quot;</code> instead of <code>&quot;Still - Hello, world!&quot;</code>.</p>
+                        <p><strong>Note</strong>: Certain low number values (<code>0</code>-<code>65535</code>) may not show up in the constant functions. We plan to add support for them later.</p>
+                        <h2 id="debugstack"><a class="header" href="#debugstack"><code>debug.*stack</code></a></h2>
+                        <p>The <code>debug</code> API also has one other set of functions - the stack functions.</p>
+                        <p>The stack functions allow you to modify any value on the stack of any function currently running that has called you. This is mostly used to modify local variables that are not upvalues. Please note this only supports call-stack levels unlike the rest of the functions.</p>
+                        <p>An example is shown below:</p>
+                        <pre><code class="language-lua">local function Test()
+    local TestVariable = &quot;Hello, world!&quot;
+    local function InnerFunction()
+        --2 refers to the Test function
+        debug.setstack(2, 1, &quot;Hello, modified world!&quot;)
+    end
+
+    InnerFunction()
+
+    print(TestVariable)
+    TestVariable = &quot;Still - Hello, world!&quot;
+    print(TestVariable)
+end
+
+Test()
+</code></pre>
+                        <p>This will also produce the same results as the upvalue testing script.</p>
+                        <h2 id="miscellaneous-debug-functions"><a class="header" href="#miscellaneous-debug-functions">Miscellaneous <code>debug</code> functions</a></h2>
+                        <p>The <code>debug</code> API also contains some other useful functions:</p>
+                        <p><code>debug.validlevel</code> - This will allow you to check if a call-stack level actually exists or not. Makes you not need to do <code>pcall</code> for debug functions with stack levels.</p>
+                        <p><code>debug.getregistry</code> - This allows you to get the Lua registry, which can be used to get connections in memory and other information.</p>
+                        <p>Lets now move on to <a href="development/./calling_extern_funcs.html">calling external functions</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="filesystem-api"><a class="header" href="#filesystem-api">Filesystem API</a></h1>
+                        <p>Synapse X contains functions that allow you to create, append, and remove files and folders within the Synapse X <code>workspace</code> directory. This allows you to save settings and any other information you may want later.</p>
+                        <h2 id="creating-files"><a class="header" href="#creating-files">Creating Files</a></h2>
+                        <p>You can create files with the <code>writefile</code> function.</p>
+                        <pre><code class="language-lua">writefile(&quot;test.txt&quot;, &quot;Testing!&quot;)
+</code></pre>
+                        <p>This will write a file named <code>test.txt</code> with the contents <code>Testing!</code> in your Synapse X <code>workspace</code> folder.</p>
+                        <h2 id="appending-files"><a class="header" href="#appending-files">Appending Files</a></h2>
+                        <p>You can use <code>appendfile</code>, which has the same arguments as the <code>writefile</code> function, but does not overwrite the file.</p>
+                        <pre><code class="language-lua">appendfile(&quot;test.txt&quot;, &quot;Testing!&quot;)
+</code></pre>
+                        <h2 id="reading-files"><a class="header" href="#reading-files">Reading Files</a></h2>
+                        <p>You can use the <code>readfile</code> function, which reads a file if it exists, erroring if it does not.</p>
+                        <pre><code class="language-lua">local contents = readfile(&quot;test.txt&quot;)
+</code></pre>
+                        <p>There is also a variation if you want to load it as a script - use <code>loadfile</code> in that case.</p>
+                        <h2 id="checking-if-a-file-exists"><a class="header" href="#checking-if-a-file-exists">Checking if a file exists</a></h2>
+                        <p>You can use the <code>isfile</code> function, which returns true if you specified a valid file.</p>
+                        <pre><code class="language-lua">local valid = isfile(&quot;test.txt&quot;)
+</code></pre>
+                        <h2 id="folders"><a class="header" href="#folders">Folders</a></h2>
+                        <p>The same interface exists for folders as well - <code>makefolder</code>, <code>delfolder</code>, <code>isfolder</code>. </p>
+                        <p>Lets conclude this tutorial series with the <a href="development/./web_api.html">web APIs</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="web-apis"><a class="header" href="#web-apis">Web APIs</a></h1>
+                        <p>Synapse X contains an API that allow you to easily make REST requests - <code>syn.request</code>.</p>
+                        <p>You pass a table containing REST request properties to the function:</p>
+                        <ul>
+                            <li><code>Url</code> - The Url for the request.</li>
+                            <li><code>Method</code> - This is the REST request method. (<code>GET</code>, <code>POST</code>, etc)</li>
+                            <li><code>Headers</code> - This is a table of HTTP headers to be passed to the request.</li>
+                            <li><code>Cookies</code> - This is a table of HTTP cookies to be passed to the request.</li>
+                            <li><code>Body</code> - This can be used within <code>POST</code> or other similar request types as a payload body.</li>
+                        </ul>
+                        <p>The function will yield while the request is being preformed, and will return the following table:</p>
+                        <ul>
+                            <li><code>Success</code> - If the request was successful or not.</li>
+                            <li><code>StatusCode</code> - The HTTP status code of the request.</li>
+                            <li><code>StatusMessage</code> - The HTTP status code converted to string form.</li>
+                            <li><code>Headers</code> - The response headers of the request.</li>
+                            <li><code>Cookies</code> - The response cookies of the request.</li>
+                            <li><code>Body</code> - The response body of the request.</li>
+                        </ul>
+                        <p>Synapse X also will add a few headers to any <code>syn.request</code> call:</p>
+                        <ul>
+                            <li>The <code>User-Agent</code> header by default will be <code>synx/current-version</code>. (<code>current-version</code> will be the current version of Synapse X.)</li>
+                            <li>A <code>Syn-Fingerprint</code> header will be added which allows you to uniquely identify Synapse X users.</li>
+                        </ul>
+                        <p>An example of syn.request is shown below:</p>
+                        <pre><code class="language-lua">local Response = syn.request({
+    Url = &quot;https://example.com&quot;,
+    Method = &quot;GET&quot;
+})
+
+print(Response.Body)
+</code></pre>
+                        <p>The HTML for <a href="https://example.com/">https://example.com</a> will be printed out.</p>
+                        <h2 id="conclusion-1"><a class="header" href="#conclusion-1">Conclusion</a></h2>
+                        <p>This concludes the Synapse X development tutorial. If you have any suggestions for topics to be included within the tutorial, please reach out to us! The next section will be a reference for all Synapse X API functions.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="api-reference"><a class="header" href="#api-reference">API Reference</a></h1>
+                        <p>This section contains documentation for every Synapse X custom function, examples of how to use them, and notes for using the functions.</p>
+                        <p>Please note some generic type information before going into the documentation:</p>
+                        <p><code>union&lt;T, X&gt;</code> refers to functions that can return more then 1 type for that specific argument/return value.</p>
+                        <p><code>?</code> refers to optional parameters. Example: <code>&lt;bool?&gt;</code></p>
+                        <p><code>&lt;void&gt;</code> refers to functions with no return results (as in other languages)</p>
+                        <p><code>variant</code> refers to parameters/return values that could be any type.</p>
+                        <p><code>...</code> refers to variable amounts of parameters/return values.</p>
+                        <p>Jump to <a href="reference/./environment.html">environment functions</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="environment-functions"><a class="header" href="#environment-functions">Environment Functions</a></h1>
+                        <h2 id="get-global-environment"><a class="header" href="#get-global-environment">Get Global Environment</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; getgenv(&lt;void&gt;)  
+</code></pre>
+                        <p>Returns the environment that will be applied to each script ran by Synapse.</p>
+                        <h2 id="get-environment"><a class="header" href="#get-environment">Get Environment</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; getrenv(&lt;void&gt;)  
+</code></pre>
+                        <p>Returns the global environment for the LocalScript state.</p>
+                        <h2 id="get-registry"><a class="header" href="#get-registry">Get Registry</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; getreg(&lt;void&gt;)  
+</code></pre>
+                        <p>Returns the Lua registry.</p>
+                        <h2 id="get-garbage-collection"><a class="header" href="#get-garbage-collection">Get Garbage Collection</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; getgc(&lt;bool?&gt; include_tables)  
+</code></pre>
+                        <p>Returns all functions and userdata values within the GC. Passing <code>true</code> will also return tables.</p>
+                        <h2 id="get-instances"><a class="header" href="#get-instances">Get Instances</a></h2>
+                        <pre><code class="language-syn">&lt;table&lt;Instance&gt;&gt; getinstances(&lt;void&gt;)  
+</code></pre>
+                        <p>Returns a list of all instances within the game.</p>
+                        <h2 id="get-nil-instances"><a class="header" href="#get-nil-instances">Get Nil Instances</a></h2>
+                        <pre><code class="language-syn">&lt;table&lt;Instance&gt;&gt; getnilinstances(&lt;void&gt;)  
+</code></pre>
+                        <p>Returns a list of all instances parented to <code>nil</code> within the game.</p>
+                        <h2 id="get-scripts"><a class="header" href="#get-scripts">Get Scripts</a></h2>
+                        <pre><code class="language-syn">&lt;table&lt;union&lt;LocalScript, ModuleScript&gt;&gt;&gt; getscripts(&lt;void&gt;)  
+</code></pre>
+                        <p>Returns a list of all scripts within the game.</p>
+                        <h2 id="get-loaded-modules"><a class="header" href="#get-loaded-modules">Get Loaded Modules</a></h2>
+                        <pre><code class="language-syn">&lt;table&lt;ModuleScript&gt;&gt; getloadedmodules(&lt;void&gt;)  
+</code></pre>
+                        <p>Returns all ModuleScripts loaded in the game.</p>
+                        <h2 id="get-connections"><a class="header" href="#get-connections">Get Connections</a></h2>
+                        <pre><code class="language-syn">&lt;table&lt;Connection&gt;&gt; getconnections(&lt;ScriptSignal&gt; obj)  
+</code></pre>
+                        <p>Gets a list of connections to the specified signal. You can do the following operations on a Connection:</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>Example</strong></th>
+                                    <th><strong>Description</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <connection>
+                                        .Function
+                                    </td>
+                                    <td>The function connected to the connection</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <connection>
+                                        .State
+                                    </td>
+                                    <td>The state of the connection</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <connection>
+                                        :Enable
+                                    </td>
+                                    <td>Enables the connection</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <connection>
+                                        :Disable
+                                    </td>
+                                    <td>Disables the connection</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <connection>
+                                        :Fire
+                                    </td>
+                                    <td>Fires the connection</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3 id="example"><a class="header" href="#example">Example</a></h3>
+                        <pre><code class="language-lua">for i, connection in pairs(getconnections(workspace.ChildAdded)) do
+    connection:Disable()
+end
+</code></pre>
+                        <h2 id="fire-signal"><a class="header" href="#fire-signal">Fire Signal</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; firesignal(&lt;ScriptSignal&gt; Signal, &lt;variant&gt; Args...)
+</code></pre>
+                        <p>Fires all the connections connected to the signal <code>Signal</code> with <code>Args</code>.</p>
+                        <h2 id="fire-click-detector"><a class="header" href="#fire-click-detector">Fire Click Detector</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; fireclickdetector(&lt;ClickDetector&gt; Detector, &lt;number&gt; Distance)
+</code></pre>
+                        <p>Fires the designated <code>ClickDetector</code> with provided <code>Distance</code>. If <code>Distance</code> isn't provided, it will default to 0.</p>
+                        <h2 id="fire-proximity-prompt"><a class="header" href="#fire-proximity-prompt">Fire Proximity Prompt</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; fireproximityprompt(&lt;ProximityPrompt&gt; Prompt, &lt;number&gt; Distance)
+</code></pre>
+                        <p>Fires the designated <code>ProximityPrompt</code>.</p>
+                        <h2 id="fire-touch-interest"><a class="header" href="#fire-touch-interest">Fire Touch Interest</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; firetouchinterest(&lt;Instance&gt; Part, &lt;BasePart&gt; ToTouch, &lt;uint&gt; Toggle)
+</code></pre>
+                        <p>Fakes a .Touched event to <code>ToTouch</code> with <code>Part</code>. The <code>Toggle</code> argument must be either 0 or 1 (for fire/un-fire).</p>
+                        <p><strong>Note</strong>: The <code>ToTouch</code> argument must have a child with class <code>TouchTransmitter</code> in order for this function to work.</p>
+                        <h2 id="is-network-owner"><a class="header" href="#is-network-owner">Is Network Owner</a></h2>
+                        <pre><code class="language-syn">&lt;bool&gt; isnetworkowner(&lt;BasePart&gt; Part)
+</code></pre>
+                        <p>Returns <code>true</code> if the Part is owned by the player.</p>
+                        <h2 id="get-hidden-property"><a class="header" href="#get-hidden-property">Get Hidden Property</a></h2>
+                        <pre><code class="language-syn">&lt;variant&gt; gethiddenproperty(&lt;Instance&gt; Object, &lt;string&gt; Property)  
+</code></pre>
+                        <p>Returns the hidden property <code>Property</code> from <code>Object</code>. Errors if the property does not exist.</p>
+                        <h2 id="set-hidden-property"><a class="header" href="#set-hidden-property">Set Hidden Property</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; sethiddenproperty(&lt;Instance&gt; Object, &lt;string&gt; Property, &lt;variant&gt; Value)  
+</code></pre>
+                        <p>Sets the hidden property <code>Property</code> with <code>Value</code> from <code>Object</code>. Errors if the property does not exist.</p>
+                        <h2 id="set-simulation-radius"><a class="header" href="#set-simulation-radius">Set Simulation Radius</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; setsimulationradius(&lt;uint&gt; SimulationRadius, &lt;uint?&gt; MaxSimulationRadius)  
+</code></pre>
+                        <p>Sets the player's SimulationRadius. If <code>MaxSimulationRadius</code> is specified, it will set that as well.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="script-functions"><a class="header" href="#script-functions">Script Functions</a></h1>
+                        <h2 id="get-script-environment"><a class="header" href="#get-script-environment">Get Script Environment</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; getsenv(union&lt;LocalScript, ModuleScript&gt; Script)  
+</code></pre>
+                        <p>Returns the environment of <code>Script</code>. Errors if the script is not loaded in memory.</p>
+                        <h2 id="get-calling-script"><a class="header" href="#get-calling-script">Get Calling Script</a></h2>
+                        <pre><code class="language-syn">&lt;union&lt;LocalScript, ModuleScript, nil&gt;&gt; getcallingscript(&lt;void&gt;)  
+</code></pre>
+                        <p>Gets the script that is calling this function. </p>
+                        <h2 id="get-script-closure"><a class="header" href="#get-script-closure">Get Script Closure</a></h2>
+                        <pre><code class="language-syn">&lt;function&gt; getscriptclosure(union&lt;LocalScript, ModuleScript&gt; Script)  
+</code></pre>
+                        <p>Gets a bare function from the script passed. Please note this is <em>not</em> the original function of the script and will not have upvalues/enviornment correctly defined.</p>
+                        <h2 id="get-script-hash"><a class="header" href="#get-script-hash">Get Script Hash</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; getscripthash(union&lt;LocalScript, ModuleScript&gt; Script)  
+</code></pre>
+                        <p>Returns a SHA384 hash of the scripts bytecode. You can use this to detect changes of a script.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="table-functions"><a class="header" href="#table-functions">Table Functions</a></h1>
+                        <h2 id="get-raw-metatable"><a class="header" href="#get-raw-metatable">Get Raw Metatable</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; getrawmetatable(&lt;table&gt; value)  
+</code></pre>
+                        <p>Retrieve the metatable of value irregardless of value's metatable's <code>__metatable</code> field. Returns <code>nil</code> if it doesn't exist.</p>
+                        <h2 id="set-raw-metatable"><a class="header" href="#set-raw-metatable">Set Raw Metatable</a></h2>
+                        <pre><code class="language-syn">&lt;bool&gt; setrawmetatable(&lt;object&gt; o, &lt;table&gt; mt)
+</code></pre>
+                        <p>Sets <code>o</code>'s metatable to <code>mt</code> even if the <code>__metatable</code> field exists in <code>o</code>'s metatable.</p>
+                        <h2 id="set-readonly"><a class="header" href="#set-readonly">Set Readonly</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; setreadonly(&lt;table&gt; t, &lt;bool&gt; val)  
+</code></pre>
+                        <p>Sets <code>t</code>'s read-only value to <code>val</code>.</p>
+                        <h2 id="is-readonly"><a class="header" href="#is-readonly">Is Readonly</a></h2>
+                        <pre><code class="language-syn">&lt;bool&gt; isreadonly(&lt;table&gt; t)  
+</code></pre>
+                        <p>Returns <code>t</code>'s read-only condition. </p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="input-functions"><a class="header" href="#input-functions">Input Functions</a></h1>
+                        <h2 id="is-active"><a class="header" href="#is-active">Is Active</a></h2>
+                        <pre><code class="language-syn">&lt;bool&gt; iswindowactive(&lt;void&gt;)  
+</code></pre>
+                        <p>Returns if the main window is in focus. This must return true for any other mouse/keyboard function to work.</p>
+                        <h2 id="keyboard"><a class="header" href="#keyboard">Keyboard</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; keypress(&lt;uint&gt; keycode)  
+</code></pre>
+                        <p>Simulates a key press for the specified <code>keycode</code>. Keycodes are listed <a href="https://docs.microsoft.com/en-us/windows/desktop/inputdev/virtual-key-codes">here</a>.</p>
+                        <pre><code class="language-syn">&lt;void&gt; keyrelease(&lt;uint&gt; key)  
+</code></pre>
+                        <p>Releases <code>key</code> on the keyboard. You can access the key values from the link above.</p>
+                        <h2 id="left-click"><a class="header" href="#left-click">Left Click</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; mouse1click(&lt;void&gt;)  
+</code></pre>
+                        <p>Simulates a full left mouse button press.</p>
+                        <pre><code class="language-syn">&lt;void&gt; mouse1press(&lt;void&gt;)  
+</code></pre>
+                        <p>Simulates a left mouse button press without releasing it.</p>
+                        <pre><code class="language-syn">&lt;void&gt; mouse1release(&lt;void&gt;)  
+</code></pre>
+                        <p>Simulates a left mouse button release.</p>
+                        <h2 id="right-click"><a class="header" href="#right-click">Right Click</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; mouse2click(&lt;void&gt;)  
+</code></pre>
+                        <p>Simulates a full right mouse button press.</p>
+                        <pre><code class="language-syn">&lt;void&gt; mouse2press(&lt;void&gt;)  
+</code></pre>
+                        <p>Clicks down on the right mouse button.</p>
+                        <pre><code class="language-syn">&lt;void&gt; mouse2release(&lt;void&gt;)  
+</code></pre>
+                        <p>Simulates a right mouse button release.</p>
+                        <h2 id="mouse-movement"><a class="header" href="#mouse-movement">Mouse Movement</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; mousescroll(&lt;number&gt; px)  
+</code></pre>
+                        <p>Scrolls the mouse wheel virtually by <code>px</code> pixels.</p>
+                        <pre><code class="language-syn">&lt;void&gt; mousemoverel(&lt;number&gt; x, &lt;number&gt; y)  
+</code></pre>
+                        <p>Moves the mouse cursor relatively to the current mouse position by coordinates <code>x</code> and <code>y</code>.</p>
+                        <pre><code class="language-syn">&lt;void&gt; mousemoveabs(&lt;number&gt; x, &lt;number&gt; y)  
+</code></pre>
+                        <p>Move's your mouse to the <code>x</code> and <code>y</code> coordinates in pixels from topleft of the main window.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="hooking-functions"><a class="header" href="#hooking-functions">Hooking Functions</a></h1>
+                        <h2 id="hook-function"><a class="header" href="#hook-function">Hook Function</a></h2>
+                        <pre><code class="language-syn">&lt;function&gt; hookfunction(&lt;function&gt; old, &lt;function&gt; hook)  
+</code></pre>
+                        <p>Hooks function <code>old</code>, replacing it with the function <code>hook</code>. The old function is returned, you <em>must</em> use this function in order to call the original function.</p>
+                        <h2 id="hook-metamethod"><a class="header" href="#hook-metamethod">Hook Metamethod</a></h2>
+                        <pre><code class="language-syn">&lt;function&gt; hookmetamethod(&lt;Object&gt; object, &lt;string&gt; metamethod, &lt;function&gt; hook)  
+</code></pre>
+                        <p>Hooks the <code>metamethod</code> passed in the <code>object</code>'s metatable with <code>hook</code>. A function to call the original metamethod is returned, you <em>must</em> use this function in order to call the original metamethod.</p>
+                        <p>This function will error if an object without a metatable is passed or a invalid metamethod is passed.</p>
+                        <h2 id="new-c-closure"><a class="header" href="#new-c-closure">New C Closure</a></h2>
+                        <pre><code class="language-syn">&lt;function&gt; newcclosure(&lt;function&gt; f)  
+</code></pre>
+                        <p>Pushes a new CClosure that invokes function <code>f</code> upon call.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="reflection-functions"><a class="header" href="#reflection-functions">Reflection Functions</a></h1>
+                        <h2 id="loadstring"><a class="header" href="#loadstring">Loadstring</a></h2>
+                        <pre><code class="language-syn">&lt;union&lt;function, nil&gt;, &lt;string?&gt;&gt; loadstring(&lt;string&gt; chunk, &lt;string?&gt; chunk_name)  
+</code></pre>
+                        <p>Loads <code>chunk</code> as a Lua function with optional <code>chunk_name</code> and returns it if compilation is successful. Otherwise, if an error has occurred during compilation, <code>nil</code> followed by the error message will be returned.</p>
+                        <h2 id="check-caller"><a class="header" href="#check-caller">Check Caller</a></h2>
+                        <pre><code class="language-syn">&lt;bool&gt; checkcaller(&lt;void&gt;)  
+</code></pre>
+                        <p>Returns <code>true</code> if the current thread is a Synapse thread.
+                            <strong>Note</strong>: Checkcaller does <em>NOT</em> check the call stack of the function, if you call a game function then it calls out to checkcaller, the result will be <code>true</code>! Be careful.
+                        </p>
+                        <h2 id="is-lua-closure"><a class="header" href="#is-lua-closure">Is Lua Closure</a></h2>
+                        <pre><code class="language-syn">&lt;bool&gt; islclosure(&lt;function&gt; f)  
+</code></pre>
+                        <p>Returns true if <code>f</code> is an LClosure.</p>
+                        <h2 id="dump-string"><a class="header" href="#dump-string">Dump String</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; dumpstring(&lt;string&gt; Script)  
+</code></pre>
+                        <p>Returns the Synapse formatted bytecode for source string <code>script</code>.</p>
+                        <h2 id="decompile"><a class="header" href="#decompile">Decompile</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; decompile(union&lt;LocalScript, ModuleScript, function, string, proto&gt; Script, union?&lt;string, bool&gt; mode, &lt;number?&gt; timeout)  
+</code></pre>
+                        <p>Decompiles <code>Script</code> and returns the decompiled script with <code>timeout</code>. If the decompilation fails, then the return value will be an error message.</p>
+                        <p><em>Note</em>: The <code>mode</code> parameter is deprecated and is not used in newer versions of Synapse.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="console-functions"><a class="header" href="#console-functions">Console Functions</a></h1>
+                        <h2 id="console-print"><a class="header" href="#console-print">Console Print</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; rconsoleprint(&lt;string&gt; message)
+</code></pre>
+                        <p>Prints <code>message</code> into the console. <code>rconsoleprint</code> also supports colors.</p>
+                        <h3 id="example-1"><a class="header" href="#example-1">Example</a></h3>
+                        <pre><code class="language-lua">rconsoleprint('@@RED@@')
+rconsoleprint('this is red')
+</code></pre>
+                        <h4 id="console-output"><a class="header" href="#console-output">Console Output</a></h4>
+                        <p><img src="reference/assets/console.png" alt="Example Output"/></p>
+                        <h3 id="colors"><a class="header" href="#colors">Colors</a></h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>Color</strong></th>
+                                    <th><strong>Code</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Black</td>
+                                    <td>@@BLACK@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Blue</td>
+                                    <td>@@BLUE@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Green</td>
+                                    <td>@@GREEN@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Cyan</td>
+                                    <td>@@CYAN@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Red</td>
+                                    <td>@@RED@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Magenta</td>
+                                    <td>@@MAGENTA@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Brown</td>
+                                    <td>@@BROWN@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Light Gray</td>
+                                    <td>@@LIGHT_GRAY@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Dark Gray</td>
+                                    <td>@@DARK_GRAY@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Light Blue</td>
+                                    <td>@@LIGHT_BLUE@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Light Green</td>
+                                    <td>@@LIGHT_GREEN@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Light Cyan</td>
+                                    <td>@@LIGHT_CYAN@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Light Red</td>
+                                    <td>@@LIGHT_RED@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Light Magenta</td>
+                                    <td>@@LIGHT_MAGENTA@@</td>
+                                </tr>
+                                <tr>
+                                    <td>Yellow</td>
+                                    <td>@@YELLOW@@</td>
+                                </tr>
+                                <tr>
+                                    <td>White</td>
+                                    <td>@@WHITE@@</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2 id="console-info"><a class="header" href="#console-info">Console Info</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; rconsoleinfo(&lt;string&gt; message)
+</code></pre>
+                        <p>Prints <code>message</code> into the console, with a info text before it.</p>
+                        <h2 id="console-warn"><a class="header" href="#console-warn">Console Warn</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; rconsolewarn(&lt;string&gt; message)
+</code></pre>
+                        <p>Prints <code>message</code> into the console, with a warning text before it.</p>
+                        <h2 id="console-error"><a class="header" href="#console-error">Console Error</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; rconsoleerr(&lt;string&gt; message)
+</code></pre>
+                        <p>Prints <code>message</code> into the console, with a error text before it.</p>
+                        <h2 id="console-clear"><a class="header" href="#console-clear">Console Clear</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; rconsoleclear(&lt;void&gt;)
+</code></pre>
+                        <p>Clears the console.</p>
+                        <h2 id="console-name"><a class="header" href="#console-name">Console Name</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; rconsolename(&lt;string&gt; title)
+</code></pre>
+                        <p>Sets the currently allocated console title to <code>title</code>.</p>
+                        <h2 id="console-input"><a class="header" href="#console-input">Console Input</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; rconsoleinput(&lt;void&gt;)
+</code></pre>
+                        <p>Yields until the user inputs information into their
+                            console. Returns the input they put in.
+                        </p>
+                        <h2 id="print-console"><a class="header" href="#print-console">Print Console</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; printconsole(&lt;string&gt; message, &lt;byte&gt; red, &lt;byte&gt; green, &lt;byte&gt; blue)
+</code></pre>
+                        <p>Prints <code>message</code> into the internal and integrated console with RGB value. To view the internal console, enable Internal UI in the Options menu and when in-game press INSERT on your keyboard. The integrated console can be found in the new synapse UI.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="filesystem-functions"><a class="header" href="#filesystem-functions">Filesystem Functions</a></h1>
+                        <h2 id="read-file"><a class="header" href="#read-file">Read File</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; readfile(&lt;string&gt; path)  
+</code></pre>
+                        <p>Reads the contents of the file located at <code>path</code> and returns it. If the file does not exist, it errors.</p>
+                        <h2 id="write-file"><a class="header" href="#write-file">Write File</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; writefile(&lt;string&gt; path, &lt;string&gt; contents)  
+</code></pre>
+                        <p>Writes <code>contents</code> to the supplied <code>path</code>.</p>
+                        <p>Extensions that are not allowed: <code>.exe</code>, <code>.scr</code>, <code>.bat</code>, <code>.com</code>, <code>.csh</code>, <code>.msi</code>, <code>.vb</code>, <code>.vbs</code>, <code>.vbe</code>, <code>.ws</code>, <code>.wsf</code>, <code>.wsh</code>, <code>.ps1</code>, <code>.psy</code>. Attempting to call this function with those extensions will error.</p>
+                        <h2 id="append-file"><a class="header" href="#append-file">Append File</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; appendfile(&lt;string&gt; path, &lt;string&gt; content)  
+</code></pre>
+                        <p>Appends <code>content</code> to the file contents at <code>path</code>. If the file does not exist, it errors.</p>
+                        <h2 id="load-file"><a class="header" href="#load-file">Load File</a></h2>
+                        <pre><code class="language-syn">&lt;union&lt;function, nil&gt;, &lt;string?&gt;&gt; loadfile(&lt;string&gt; path)  
+</code></pre>
+                        <p>Loads in the contents of a file as a chunk and returns it if compilation is successful. Otherwise, if an error has occurred during compilation, <code>nil</code> followed by the error message will be returned.</p>
+                        <h2 id="list-files"><a class="header" href="#list-files">List Files</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; listfiles(&lt;string&gt; folder)
+</code></pre>
+                        <p>Returns a table of files in <code>folder</code>.</p>
+                        <h2 id="is-file"><a class="header" href="#is-file">Is File</a></h2>
+                        <pre><code class="language-syn">&lt;bool&gt; isfile(&lt;string&gt; path)
+</code></pre>
+                        <p>Returns if <code>path</code> is a file or not.</p>
+                        <h2 id="is-folder"><a class="header" href="#is-folder">Is Folder</a></h2>
+                        <pre><code class="language-syn">&lt;bool&gt; isfolder(&lt;string&gt; path)
+</code></pre>
+                        <p>Returns if <code>path</code> is a folder or not.</p>
+                        <h2 id="make-folder"><a class="header" href="#make-folder">Make Folder</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; makefolder(&lt;string&gt; path)
+</code></pre>
+                        <p>Creates a new folder at <code>path</code>.</p>
+                        <h2 id="delete-folder"><a class="header" href="#delete-folder">Delete Folder</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; delfolder(&lt;string&gt; path)
+</code></pre>
+                        <p>Deletes the folder in the supplied <code>path</code>, if no folder exists, it errors.</p>
+                        <h2 id="delete-file"><a class="header" href="#delete-file">Delete File</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; delfile(&lt;string&gt; path)
+</code></pre>
+                        <p>Deletes the file in the supplied <code>path</code>, if no file exists, it errors.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="miscellaneous-functions"><a class="header" href="#miscellaneous-functions">Miscellaneous Functions</a></h1>
+                        <h2 id="set-clipboard"><a class="header" href="#set-clipboard">Set Clipboard</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; setclipboard(&lt;string&gt; value)  
+</code></pre>
+                        <p>Sets <code>value</code> to the clipboard.</p>
+                        <h2 id="set-fast-flag"><a class="header" href="#set-fast-flag">Set Fast Flag</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; setfflag(&lt;string&gt; FFlag, &lt;string&gt; Value)
+</code></pre>
+                        <p>Sets <code>FFlag</code> with <code>Value</code>. Must be run before the game loads, auto execute + auto launch recommended.</p>
+                        <h2 id="get-namecall-method"><a class="header" href="#get-namecall-method">Get Namecall Method</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; getnamecallmethod(&lt;void&gt;)
+</code></pre>
+                        <p>Returns the namecall method if the function is called in an <code>__namecall</code> metatable hook.</p>
+                        <h2 id="set-namecall-method"><a class="header" href="#set-namecall-method">Set Namecall Method</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; setnamecallmethod(&lt;string&gt; method)
+</code></pre>
+                        <p>Sets the current namecall method to the new namecall <code>method</code>. Must be called in a <code>__namecall</code> metatable hook.</p>
+                        <h2 id="get-synapse-asset"><a class="header" href="#get-synapse-asset">Get Synapse Asset</a></h2>
+                        <pre><code class="language-syn">&lt;Content&gt; getsynasset(&lt;string&gt; path)
+</code></pre>
+                        <p>Returns a <code>Content</code> string that can be used as a fake Asset ID for GUI elements. Please note this will only affect your client.</p>
+                        <p><strong>Note</strong>: Certain instances only work with specific file types. For example, <code>VideoFrame</code>'s only work with <code>.webm</code> encoded videos.</p>
+                        <h2 id="get-special-info"><a class="header" href="#get-special-info">Get Special Info</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; getspecialinfo(&lt;Instance&gt; obj)  
+</code></pre>
+                        <p>Gets a list of special properties for <code>MeshParts</code>, <code>UnionOperations</code>, and <code>Terrain</code> instances.</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>MeshParts</strong></th>
+                                    <th><strong>UnionOperations</strong></th>
+                                    <th><strong>Terrain</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>PhysicsData</td>
+                                    <td>AssetId</td>
+                                    <td>SmoothGrid</td>
+                                </tr>
+                                <tr>
+                                    <td>InitialSize</td>
+                                    <td>ChildData</td>
+                                    <td>MaterialColors</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>FormFactor</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>InitialSize</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>MeshData</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>PhysicsData</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2 id="save-instance"><a class="header" href="#save-instance">Save Instance</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; saveinstance(&lt;table&gt; t)  
+</code></pre>
+                        <p>Saves the current game into your workspace folder. You can use table <code>t</code> to customize options for this.</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>Option</strong></th>
+                                    <th><strong>Value</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>mode</td>
+                                    <td>optimized / full / scripts</td>
+                                </tr>
+                                <tr>
+                                    <td>noscripts</td>
+                                    <td>true / false</td>
+                                </tr>
+                                <tr>
+                                    <td>scriptcache</td>
+                                    <td>true / false</td>
+                                </tr>
+                                <tr>
+                                    <td>timeout</td>
+                                    <td>any number</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2 id="message-box"><a class="header" href="#message-box">Message Box</a></h2>
+                        <pre><code class="language-syn">&lt;uint&gt; messagebox(&lt;string&gt; text, &lt;string&gt; caption, &lt;uint&gt; flags)
+</code></pre>
+                        <p>Creates a message box with parameters text, caption and style.</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>Style</strong></th>
+                                    <th><strong>Number</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>OK</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>OK / Cancel</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td>Abort / Retry / Ignore</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>Yes / No / Cancel</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>Yes / No</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>Retry / Cancel</td>
+                                    <td>5</td>
+                                </tr>
+                                <tr>
+                                    <td>Cancel / Try Again / Continue</td>
+                                    <td>6</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>Code</strong></th>
+                                    <th><strong>Description</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>The OK button was selected</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>The Cancel button was selected.</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>The Abort button was selected.</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>The Retry button was selected.</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>The Ignore button was selected.</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>The Yes button was selected.</td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>The No button was selected.</td>
+                                </tr>
+                                <tr>
+                                    <td>10</td>
+                                    <td>The Try Again button was selected.</td>
+                                </tr>
+                                <tr>
+                                    <td>11</td>
+                                    <td>The Continue button was selected.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="libraries"><a class="header" href="#libraries">Libraries</a></h1>
+                        <p>We will now list the libraries within Synapse.</p>
+                        <p>Jump to the <a href="reference/./bit_lib.html">bit library</a>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="bit-library"><a class="header" href="#bit-library">Bit Library</a></h1>
+                        <h2 id="bdiv"><a class="header" href="#bdiv">bdiv</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.bdiv(&lt;uint&gt; dividend, &lt;uint&gt; divisor)  
+</code></pre>
+                        <p>Divides <code>dividend</code> by <code>divisor</code>, remainder is not returned.</p>
+                        <h2 id="badd"><a class="header" href="#badd">badd</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.badd(&lt;uint&gt; a, &lt;uint&gt; b)  
+</code></pre>
+                        <p>Adds <code>a</code> with <code>b</code>, allows overflows.</p>
+                        <h2 id="bsub"><a class="header" href="#bsub">bsub</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.bsub(&lt;uint&gt; a, &lt;uint&gt; b)  
+</code></pre>
+                        <p>Subtracts <code>a</code> with <code>b</code>, allows overflows. </p>
+                        <h2 id="bmul"><a class="header" href="#bmul">bmul</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.bmul(&lt;uint&gt; val, &lt;uint&gt; by)  
+</code></pre>
+                        <p>Multiplies <code>val</code> using <code>by</code>, allows overflows.</p>
+                        <br/>
+                        <p><strong>Note</strong>: All bitwise functions within the <code>bit</code> lib return <strong>signed</strong> 32 bit integers. Take good note of that when implementing. If you want unsigned results, we suggest using <code>bit32</code>.</p>
+                        <h2 id="band"><a class="header" href="#band">band</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.band(&lt;uint&gt; val, &lt;uint&gt; by)  
+</code></pre>
+                        <p>Does a bitwise AND (&amp;) on <code>val</code> using <code>by</code>.</p>
+                        <h2 id="bor"><a class="header" href="#bor">bor</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.bor(&lt;uint&gt; val, &lt;uint&gt; by)  
+</code></pre>
+                        <p>Does a bitwise OR (|) on <code>val</code> using <code>by</code>.</p>
+                        <h2 id="bxor"><a class="header" href="#bxor">bxor</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.bxor(&lt;uint&gt; val, &lt;uint&gt; by)  
+</code></pre>
+                        <p>Does a bitwise XOR (⊕) on <code>val</code> using <code>by</code>.</p>
+                        <h2 id="bnot"><a class="header" href="#bnot">bnot</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.bnot(&lt;uint&gt; val)  
+</code></pre>
+                        <p>Does a bitwise NOT on <code>val</code>.</p>
+                        <h2 id="bswap"><a class="header" href="#bswap">bswap</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.bswap(&lt;uint&gt; val)  
+</code></pre>
+                        <p>Does a bitwise swap on <code>val</code>.</p>
+                        <h2 id="ror"><a class="header" href="#ror">ror</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.rol(&lt;int&gt; value, &lt;int&gt; rotate_count)
+</code></pre>
+                        <p>Returns the <code>value</code> rotated right by <code>rotate_count</code>.</p>
+                        <h2 id="rol"><a class="header" href="#rol">rol</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.rol(&lt;int&gt; value, &lt;int&gt; rotate_count)
+</code></pre>
+                        <p>Returns the <code>value</code> rotated left by <code>rotate_count</code>.</p>
+                        <h2 id="tohex"><a class="header" href="#tohex">tohex</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; bit.tohex(&lt;uint&gt; val)  
+</code></pre>
+                        <p>Converts <code>val</code> to a hex string.</p>
+                        <h2 id="tobit"><a class="header" href="#tobit">tobit</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.tobit(&lt;uint&gt; val)  
+</code></pre>
+                        <p>Converts <code>val</code> into proper form for bitwise operations.</p>
+                        <h2 id="lshift"><a class="header" href="#lshift">lshift</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.lshift(&lt;uint&gt; val, &lt;uint&gt; by)  
+</code></pre>
+                        <p>Does a left shift on <code>val</code> using <code>by</code>.</p>
+                        <h2 id="rshift"><a class="header" href="#rshift">rshift</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.rshift(&lt;uint&gt; val, &lt;uint&gt; by)  
+</code></pre>
+                        <p>Does a right shift on <code>val</code> using <code>by</code>.</p>
+                        <h2 id="arshift"><a class="header" href="#arshift">arshift</a></h2>
+                        <pre><code class="language-syn">&lt;int&gt; bit.arshift(&lt;int&gt; value, &lt;int&gt; shift_count)
+</code></pre>
+                        <p>Returns the arithmetically shifted value.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="crypt-library"><a class="header" href="#crypt-library">Crypt Library</a></h1>
+                        <h2 id="encrypt"><a class="header" href="#encrypt">Encrypt</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; syn.crypt.encrypt(&lt;string&gt; data, &lt;string&gt; key)  
+</code></pre>
+                        <p>Encrypts <code>data</code> with <code>key</code> (algorithm used is AES-GCM, random nonce generated per call).</p>
+                        <h2 id="decrypt"><a class="header" href="#decrypt">Decrypt</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; syn.crypt.decrypt(&lt;string&gt; data, &lt;string&gt; key)  
+</code></pre>
+                        <p>Decrypts <code>data</code> with <code>key</code>.</p>
+                        <h2 id="base64-encode"><a class="header" href="#base64-encode">Base64 Encode</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; syn.crypt.base64.encode(&lt;string&gt; data)  
+</code></pre>
+                        <p>Encodes <code>data</code> with base64.</p>
+                        <h2 id="base64-decode"><a class="header" href="#base64-decode">Base64 Decode</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; syn.crypt.base64.decode(&lt;string&gt; data)  
+</code></pre>
+                        <p>Decodes <code>data</code> with base64.</p>
+                        <h2 id="hash"><a class="header" href="#hash">Hash</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; syn.crypt.hash(&lt;string&gt; data)
+</code></pre>
+                        <p>Hashes <code>data</code> with SHA-384.</p>
+                        <h2 id="derive"><a class="header" href="#derive">Derive</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; syn.crypt.derive(&lt;string&gt; value, &lt;uint&gt; len)
+</code></pre>
+                        <p>Derives a secret key from <code>value</code> with the length of <code>len</code>.</p>
+                        <h2 id="random"><a class="header" href="#random">Random</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; syn.crypt.random(&lt;uint&gt; size)
+</code></pre>
+                        <p>Generates a random string with <code>size</code> (cannot be negative or exceed 1024).</p>
+                        <h1 id="custom"><a class="header" href="#custom">Custom</a></h1>
+                        <h2 id="encrypt-1"><a class="header" href="#encrypt-1">Encrypt</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; syn.crypt.custom.encrypt(&lt;string&gt; cipher, &lt;string&gt; data, &lt;string&gt; key, &lt;string&gt; iv/nonce)
+</code></pre>
+                        <p>Encrypts <code>data</code> with <code>key</code> using selected <code>cipher</code> and <code>iv/nonce</code>.</p>
+                        <h2 id="decrypt-1"><a class="header" href="#decrypt-1">Decrypt</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; syn.crypt.custom.decrypt(&lt;string&gt; cipher, &lt;string&gt; data, &lt;string&gt; key, &lt;string&gt; iv/nonce)
+</code></pre>
+                        <p>Decrypts <code>data</code> with <code>key</code> using selected <code>cypher</code> and <code>iv/nonce</code>.</p>
+                        <h2 id="hash-1"><a class="header" href="#hash-1">Hash</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; syn.crypt.custom.hash(&lt;string&gt; algorithm, &lt;string&gt; data)
+</code></pre>
+                        <p>Hashes <code>data</code> with <code>algorithm</code>.</p>
+                        <h2 id="encryptiondecryption-ciphers"><a class="header" href="#encryptiondecryption-ciphers">Encryption/Decryption ciphers</a></h2>
+                        <p>You can use both <code>-</code> and <code>_</code>. With Blowfish <code>bf</code> or <code>blowfish</code>.</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>AES</strong></th>
+                                    <th><strong>Blowfish</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>aes-cbc</td>
+                                    <td>bf-cbc</td>
+                                </tr>
+                                <tr>
+                                    <td>aes-cfb</td>
+                                    <td>bf-cfb</td>
+                                </tr>
+                                <tr>
+                                    <td>aes-ctr</td>
+                                    <td>bf-ofb</td>
+                                </tr>
+                                <tr>
+                                    <td>aes-ofb</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>aes-gcm</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>aes-eax</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2 id="hashing-algorithms"><a class="header" href="#hashing-algorithms">Hashing algorithms</a></h2>
+                        <p>Same goes here, you can use <code>-</code> or <code>_</code>.</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>MD5</strong></th>
+                                    <th><strong>SHA1</strong></th>
+                                    <th><strong>SHA2</strong></th>
+                                    <th><strong>SHA3</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>md5</td>
+                                    <td>sha1</td>
+                                    <td>sha224</td>
+                                    <td>sha3-256</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>sha256</td>
+                                    <td>sha3-384</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>sha384</td>
+                                    <td>sha3-512</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>sha512</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3 id="example-2"><a class="header" href="#example-2">Example</a></h3>
+                        <pre><code class="language-lua">local enc = syn.crypt.custom.encrypt(
+    &quot;aes-gcm&quot;,
+    &quot;hi gamers!&quot;, 
+    &quot;$nLliCMdi7gcynsFCK9u0aVNdtkNIiZG&quot;,
+    &quot;Agd13KuKIL2$&quot;) -- in production, generate a nonce via syn.crypt.random
+
+print(enc)
+
+print(syn.crypt.custom.decrypt(
+    &quot;aes-gcm&quot;,
+    enc,
+    &quot;$nLliCMdi7gcynsFCK9u0aVNdtkNIiZG&quot;,
+    &quot;Agd13KuKIL2$&quot;)) --&quot;hi gamers&quot;
+</code></pre>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="debug-library"><a class="header" href="#debug-library">Debug Library</a></h1>
+                        <h2 id="get-constants"><a class="header" href="#get-constants">Get Constants</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; debug.getconstants(union&lt;function, number&gt; fi)  
+</code></pre>
+                        <p>Retrieve the constants in function <code>fi</code> or at level <code>fi</code>.</p>
+                        <h2 id="get-constant"><a class="header" href="#get-constant">Get Constant</a></h2>
+                        <pre><code class="language-syn">&lt;variant&gt; debug.getconstant(union&lt;function, number&gt; fi, &lt;number&gt; idx)  
+</code></pre>
+                        <p>Returns the constant at index <code>idx</code> in function <code>fi</code> or level <code>fi</code>.</p>
+                        <h2 id="set-constant"><a class="header" href="#set-constant">Set Constant</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; debug.setconstant(union&lt;function, number&gt; fi, union&lt;string, int&gt; idx, union&lt;number, bool, nil, string&gt; value)  
+</code></pre>
+                        <p>Set constant <code>idx</code> to tuple <code>value</code> at level or function <code>fi</code>.</p>
+                        <br>
+                        <h2 id="get-upvalues"><a class="header" href="#get-upvalues">Get Upvalues</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; debug.getupvalues(union&lt;function, number&gt; fi)  
+</code></pre>
+                        <p>Retrieve the upvalues in function <code>fi</code> or at level <code>fi</code>.</p>
+                        <h2 id="get-upvalue"><a class="header" href="#get-upvalue">Get Upvalue</a></h2>
+                        <pre><code class="language-syn">&lt;variant&gt; debug.getupvalue(union&lt;function, number&gt; fi, &lt;number&gt; idx)
+</code></pre>
+                        <p>Returns the upvalue with name <code>idx</code> in function or level <code>fi</code>.</p>
+                        <h2 id="set-upvalue"><a class="header" href="#set-upvalue">Set Upvalue</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; debug.setupvalue(&lt;function, number&gt; fi, &lt;number&gt; idx, &lt;table&gt; value)  
+</code></pre>
+                        <p>Set upvalue <code>idx</code> to value <code>value</code> at level or function <code>fi</code>.</p>
+                        <br>
+                        <h2 id="get-protos"><a class="header" href="#get-protos">Get Protos</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; debug.getprotos(&lt;function&gt; f)
+</code></pre>
+                        <p>Returns a table containing the inner functions of function <code>f</code>. Note these functions will not have upvalues, use <code>debug.getproto</code> with activated <code>true</code> to get a list of instances.</p>
+                        <h2 id="get-proto"><a class="header" href="#get-proto">Get Proto</a></h2>
+                        <pre><code class="language-syn">union&lt;function, table&lt;function&gt;&gt; debug.getproto(&lt;function, number&gt; f, &lt;int&gt; index, &lt;bool?&gt; activated)
+</code></pre>
+                        <p>Gets the inner function of <code>f</code> at <code>index</code>.</p>
+                        <p>Note if <code>activated</code> is true, instead it will return a table of functions. These are the instances of that function that exist within the GC.</p>
+                        <h2 id="set-proto"><a class="header" href="#set-proto">Set Proto</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; debug.setproto(&lt;function&gt; fi, &lt;number&gt; index, &lt;function&gt; replacement)
+</code></pre>
+                        <p>Replaces <code>fi</code> at <code>index</code> with function <code>replacement</code> at level or function <code>fi</code>.</p>
+                        <br>
+                        <h2 id="get-stack"><a class="header" href="#get-stack">Get Stack</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; debug.getstack(&lt;number&gt; indice)
+</code></pre>
+                        <p>Gets the method stack at level <code>indice</code>.</p>
+                        <h2 id="set-stack"><a class="header" href="#set-stack">Set Stack</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; debug.setstack(&lt;number&gt; indice, &lt;number&gt; indice, &lt;table&gt; value)
+</code></pre>
+                        <p>Set the stack indice at level <code>indice</code> to value <code>value</code> at level or function <code>fi</code>.</p>
+                        <br>
+                        <h2 id="set-metatable"><a class="header" href="#set-metatable">Set Metatable</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; debug.setmetatable(&lt;table&gt; o, &lt;table&gt; mt)  
+</code></pre>
+                        <p>Set the metatable of <code>o</code> to <code>mt</code>.</p>
+                        <h2 id="get-registry-1"><a class="header" href="#get-registry-1">Get Registry</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; debug.getregistry(&lt;void&gt;)  
+</code></pre>
+                        <p>Returns the Lua registry.</p>
+                        <h2 id="get-info"><a class="header" href="#get-info">Get Info</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; debug.getinfo(union&lt;function, number&gt; fi, &lt;string&gt; w = &quot;flnSu&quot;)  
+</code></pre>
+                        <p>Returns a table of info pertaining to the lua function <code>fi</code>.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="drawing-library"><a class="header" href="#drawing-library">Drawing Library</a></h1>
+                        <h2 id="drawing-new"><a class="header" href="#drawing-new">Drawing New</a></h2>
+                        <pre><code class="language-syn">&lt;object&gt; Drawing.new(&lt;string&gt; type)
+</code></pre>
+                        <p>Creates a new drawing object with <code>type</code>. Returns the object.</p>
+                        <h2 id="fonts"><a class="header" href="#fonts">Fonts</a></h2>
+                        <p>The following fonts are available within the <code>Drawing.Fonts</code> table.</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>Font</strong></th>
+                                    <th><strong>Number</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>UI</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>System</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td>Plex</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>Monospace</td>
+                                    <td>3</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2 id="base-properties"><a class="header" href="#base-properties">Base Properties</a></h2>
+                        <pre><code class="language-syn">bool Visible;
+int ZIndex;
+number Transparency;
+Color3 Color;
+void Remove();
+</code></pre>
+                        <p><em>Notes</em>:</p>
+                        <ul>
+                            <li>All other classes derive from this base class.</li>
+                            <li>Transparency is the opposite than on normal GUI elements - 1 means fully opaque, while 0 means fully transparent.</li>
+                            <li>
+                                ZIndex's are <strong>32 bit integers</strong> - you can only use whole numbers from -2,147,483,647 to 2,147,483,647. All objects by default have a ZIndex of zero.
+                                <ul>
+                                    <li>
+                                        Related to that, the object rendering order goes from the lowest ZIndex to the highest. This means ZIndex's of lower values will render first, and higher will render after.
+                                        <ul>
+                                            <li>In more laymen terms, this means an object with a higher ZIndex will render above one with a lower ZIndex.</li>
+                                        </ul>
+                                    </li>
+                                    <li>In a single ZIndex, the render order is '<em>first come first serve</em>' - the oldest objects in the same ZIndex will be rendered first. Switching to a different ZIndex will kick that object back to the end of the rendering order for that ZIndex. Newly allocated objects will also start at the end of the rendering order for that specific ZIndex.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <h2 id="types"><a class="header" href="#types">Types:</a></h2>
+                        <br>
+                        <h3 id="line"><a class="header" href="#line">Line</a></h3>
+                        <pre><code class="language-syn">number Thickness;
+Vector2 From;
+Vector2 To;
+</code></pre>
+                        <h3 id="text"><a class="header" href="#text">Text</a></h3>
+                        <pre><code class="language-syn">string Text;
+number Size;
+bool Center;
+bool Outline;
+Color3 OutlineColor;
+Vector2 Position;
+readonly&lt;Vector2&gt; TextBounds;
+Drawing.Font Font;
+</code></pre>
+                        <h3 id="image"><a class="header" href="#image">Image</a></h3>
+                        <pre><code class="language-syn">writeonly&lt;string&gt; Data;
+Vector2 Size;
+Vector2 Position;
+number Rounding;
+</code></pre>
+                        <p><em>Notes</em>:</p>
+                        <ul>
+                            <li><code>Data</code> does <strong>NOT</strong> refer to the URL of the image. You must grab the image data yourself (<code>game:HttpGet</code>), then assign that to <code>Data</code>.</li>
+                        </ul>
+                        <h3 id="circle"><a class="header" href="#circle">Circle</a></h3>
+                        <pre><code class="language-syn">number Thickness;
+number NumSides;
+number Radius;
+bool Filled;
+Vector2 Position;
+</code></pre>
+                        <h3 id="square"><a class="header" href="#square">Square</a></h3>
+                        <pre><code class="language-syn">number Thickness;
+Vector2 Size;
+Vector2 Position;
+bool Filled;
+</code></pre>
+                        <h3 id="quad"><a class="header" href="#quad">Quad</a></h3>
+                        <pre><code class="language-syn">number Thickness;
+Vector2 PointA;
+Vector2 PointB;
+Vector2 PointC;
+Vector2 PointD;
+bool Filled;
+</code></pre>
+                        <p><em>Notes</em>:</p>
+                        <ul>
+                            <li>The points are in counter-clockwise order - PointA is top-right, PointB is top-left, PointC is bottom-left, PointD is bottom-right.</li>
+                        </ul>
+                        <h3 id="triangle"><a class="header" href="#triangle">Triangle</a></h3>
+                        <pre><code class="language-syn">number Thickness;
+Vector2 PointA;
+Vector2 PointB;
+Vector2 PointC;
+bool Filled;
+</code></pre>
+                        <br>
+                        <h2 id="example-3"><a class="header" href="#example-3">Example</a></h2>
+                        <pre><code class="language-lua">local Line = Drawing.new(&quot;Line&quot;)
+Line.Visible = true
+Line.From = Vector2.new(0, 0)
+Line.To = Vector2.new(200, 200)
+Line.Color = Color3.fromRGB(255, 255, 255)
+Line.Thickness = 2
+Line.Transparency = 1
+LIne.ZIndex = 1
+
+wait(5)
+
+Line:Remove() --Drawing objects are manually managed.
+</code></pre>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="syn-library"><a class="header" href="#syn-library">Syn Library</a></h1>
+                        <h2 id="cache-replace"><a class="header" href="#cache-replace">Cache Replace</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; syn.cache_replace(&lt;Instance&gt; obj, &lt;Instance&gt; t_obj)  
+</code></pre>
+                        <p>Replace <code>obj</code> in the instance cache with <code>t_obj</code>.</p>
+                        <h2 id="cache-invalidate"><a class="header" href="#cache-invalidate">Cache Invalidate</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; syn.cache_invalidate(&lt;Instance&gt; obj)  
+</code></pre>
+                        <p>Invalidate <code>obj</code>'s cache entry, forcing a re-cache upon the next lookup.</p>
+                        <h2 id="set-thread-identity"><a class="header" href="#set-thread-identity">Set Thread Identity</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; syn.set_thread_identity(&lt;uint&gt; n)  
+</code></pre>
+                        <p>Sets the current thread identity.</p>
+                        <h2 id="get-thread-identity"><a class="header" href="#get-thread-identity">Get Thread Identity</a></h2>
+                        <pre><code class="language-syn">&lt;uint&gt; syn.get_thread_identity(&lt;void&gt;)  
+</code></pre>
+                        <p>Returns the current thread identity.</p>
+                        <h2 id="is-cached"><a class="header" href="#is-cached">Is Cached</a></h2>
+                        <pre><code class="language-syn">&lt;bool&gt; syn.is_cached(&lt;Instance&gt; obj)  
+</code></pre>
+                        <p>Returns true if <code>obj</code> is currently cached within the registry.</p>
+                        <h2 id="write-clipboard"><a class="header" href="#write-clipboard">Write Clipboard</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; syn.write_clipboard(&lt;string&gt; content)  
+</code></pre>
+                        <p>Writes <code>content</code> to the current Windows clipboard.</p>
+                        <h2 id="queue-on-teleport"><a class="header" href="#queue-on-teleport">Queue On Teleport</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; syn.queue_on_teleport(&lt;string&gt; code)
+</code></pre>
+                        <p>Executes <code>code</code> after player is teleported.</p>
+                        <h3 id="example-4"><a class="header" href="#example-4">Example</a></h3>
+                        <pre><code class="language-lua">game:GetService(&quot;Players&quot;).LocalPlayer.OnTeleport:Connect(function(State)
+    if State == Enum.TeleportState.Started then
+        syn.queue_on_teleport(&quot;&lt;script to execute after TP&gt;&quot;)
+    end
+end)
+</code></pre>
+                        <h2 id="protect-gui"><a class="header" href="#protect-gui">Protect Gui</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; syn.protect_gui(&lt;obj&gt; GUI)
+</code></pre>
+                        <p>Protects your <code>GUI</code> from recursive FindFirstChild-style attacks. After you call the function, recursive FFA calls from non-Synapse contexts will skip over your protected instances &amp; all children of such instances.</p>
+                        <h3 id="example-5"><a class="header" href="#example-5">Example</a></h3>
+                        <pre><code class="language-lua">local GUI = game:GetObjects(&quot;whatever&quot;)[1]
+syn.protect_gui(GUI) -- You should call protect_gui before your GUI is parented.
+GUI.Parent = game:GetService(&quot;CoreGui&quot;)
+</code></pre>
+                        <h2 id="unprotect-gui"><a class="header" href="#unprotect-gui">Unprotect Gui</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; syn.unprotect_gui(&lt;Instance&gt; GUI)
+</code></pre>
+                        <p>Removes protection from the <code>GUI</code>. Errors if <code>gui</code> isn't already protected.</p>
+                        <h2 id="is-beta"><a class="header" href="#is-beta">Is Beta</a></h2>
+                        <pre><code class="language-syn">&lt;bool&gt; syn.is_beta(&lt;void&gt;)
+</code></pre>
+                        <p>Returns a bool indicating whether the user is using Synapse Beta or not.</p>
+                        <h2 id="crypto"><a class="header" href="#crypto">Crypto</a></h2>
+                        <pre><code class="language-syn">&lt;...&gt; syn.crypto.*
+</code></pre>
+                        <p>Alias for <code>syn.crypt.*</code>. You can view the functions in the <a href="reference/./crypt_lib.html">cryptography library</a> section.</p>
+                        <h2 id="request"><a class="header" href="#request">Request</a></h2>
+                        <pre><code class="language-syn">&lt;table&gt; syn.request(&lt;table&gt; options)
+</code></pre>
+                        <p>Sends a http request with parameters in <code>options</code>.</p>
+                        <h3 id="request-dictionary-fields"><a class="header" href="#request-dictionary-fields">Request Dictionary Fields</a></h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>Name</strong></th>
+                                    <th><strong>Type</strong></th>
+                                    <th><strong>Required</strong></th>
+                                    <th><strong>Description</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Url</td>
+                                    <td>String</td>
+                                    <td>Yes</td>
+                                    <td>The target URL for this request. Must use <code>http</code> or <code>https</code> protocols.</td>
+                                </tr>
+                                <tr>
+                                    <td>Method</td>
+                                    <td>String</td>
+                                    <td>No</td>
+                                    <td>The HTTP method being used by this request, most often GET or POST.</td>
+                                </tr>
+                                <tr>
+                                    <td>Headers</td>
+                                    <td>Dictionary</td>
+                                    <td>No</td>
+                                    <td>A dictionary of headers to be used with this request. Most HTTP headers are accepted here, but not all.</td>
+                                </tr>
+                                <tr>
+                                    <td>Cookies</td>
+                                    <td>Dictionary</td>
+                                    <td>No</td>
+                                    <td>A dictionary of cookies to be used with this request.</td>
+                                </tr>
+                                <tr>
+                                    <td>Body</td>
+                                    <td>String</td>
+                                    <td>No</td>
+                                    <td>The request body. Can be any string, including binary data. Must be excluded when using the GET or HEAD HTTP methods. It might be necessary to specify the <code>Content-Type</code> header when sending JSON or other formats.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3 id="response-dictionary-fields"><a class="header" href="#response-dictionary-fields">Response Dictionary Fields</a></h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>Name</strong></th>
+                                    <th><strong>Type</strong></th>
+                                    <th><strong>Description</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Success</td>
+                                    <td>Boolean</td>
+                                    <td>The success status of the request. This is true if and only if the StatusCode lies within the range [200, 299].</td>
+                                </tr>
+                                <tr>
+                                    <td>StatusCode</td>
+                                    <td>Integer</td>
+                                    <td>The HTTP response code identifying the status of the response.</td>
+                                </tr>
+                                <tr>
+                                    <td>StatusMessage</td>
+                                    <td>String</td>
+                                    <td>The status message that was sent back.</td>
+                                </tr>
+                                <tr>
+                                    <td>Headers</td>
+                                    <td>Dictionary</td>
+                                    <td>A dictionary of headers that were set in this response.</td>
+                                </tr>
+                                <tr>
+                                    <td>Cookies</td>
+                                    <td>Dictionary</td>
+                                    <td>A dictionary of cookies that were set in this response.</td>
+                                </tr>
+                                <tr>
+                                    <td>Body</td>
+                                    <td>String</td>
+                                    <td>The request body (content) received in the response.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3 id="synapse-headers"><a class="header" href="#synapse-headers">Synapse Headers</a></h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>Name</strong></th>
+                                    <th><strong>Description</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Syn-Fingerprint</td>
+                                    <td>Users HWID, changes between PCs.</td>
+                                </tr>
+                                <tr>
+                                    <td>Syn-User-Identifier</td>
+                                    <td>Similar to <code>Syn-Fingerprint</code> , but does not change between PCs. Pretty useful as a way to identify Synapse accounts for cross-PC save data/etc.</td>
+                                </tr>
+                                <tr>
+                                    <td>User-Agent</td>
+                                    <td>The version of synapse the request was made from. Example: <code>synx/v2.1.3b</code>.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3 id="example-6"><a class="header" href="#example-6">Example</a></h3>
+                        <pre><code class="language-lua">local response = syn.request(
+    {
+        Url = &quot;http://httpbin.org/post&quot;,  -- This website helps debug HTTP requests
+        Method = &quot;POST&quot;,
+        Headers = {
+            [&quot;Content-Type&quot;] = &quot;application/json&quot;  -- When sending JSON, set this!
+        },
+        Body = game:GetService(&quot;HttpService&quot;):JSONEncode({hello = &quot;world&quot;})
+    }
+)
+    
+for i,v in pairs(response) do
+    print(i,v)
+    
+    if type(v) == &quot;table&quot; then
+        for i2,v2 in pairs(v) do
+            warn(i2,v2)
+        end
+    end
+end
+</code></pre>
+                        <h2 id="secure-call"><a class="header" href="#secure-call">Secure Call</a></h2>
+                        <h3 id="notice-this-function-is-deprecated-and-will-be-removed-in-synapse-v3"><a class="header" href="#notice-this-function-is-deprecated-and-will-be-removed-in-synapse-v3">Notice: This function is deprecated and will be removed in Synapse V3.</a></h3>
+                        <pre><code class="language-syn">&lt;variant...&gt; syn.secure_call(&lt;function&gt; func, union&lt;LocalScript, ModuleScript, table&gt; script, &lt;variant&gt; args...)
+</code></pre>
+                        <p>Spoofs caller environment and context when calling <code>func</code> with <code>script</code>'s environment. You can pass as many arguments <code>args</code> as is required. <code>secure_call</code> returns whatever the called function returns.</p>
+                        <p>You can also pass a table to <code>script</code> if you wish to customize how the call will occur:</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><strong>Name</strong></th>
+                                    <th><strong>Type</strong></th>
+                                    <th><strong>Required</strong></th>
+                                    <th><strong>Description</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Script</td>
+                                    <td>Local/ModuleScript</td>
+                                    <td>Yes</td>
+                                    <td>The script that the call will be spoofed as.</td>
+                                </tr>
+                                <tr>
+                                    <td>Environment</td>
+                                    <td>Table</td>
+                                    <td>No</td>
+                                    <td>The enviornment that the call will be spoofed as. By default it is getsenv(Script)</td>
+                                </tr>
+                                <tr>
+                                    <td>LineNumber</td>
+                                    <td>Number</td>
+                                    <td>No</td>
+                                    <td>The line number that the call will be spoofed as. By default is random.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3 id="example-7"><a class="header" href="#example-7">Example</a></h3>
+                        <pre><code class="language-lua">local KeyHandler = require(game:GetService(&quot;ReplicatedStorage&quot;).Assets.Modules.KeyHandler)
+local PlayerName = game:GetService(&quot;Players&quot;).LocalPlayer.Name
+local FakeEnv = game:GetService(&quot;Workspace&quot;).Live[PlayerName].CharacterHandler.Input
+
+local Result = syn.secure_call(KeyHandler, FakeEnv)
+local Event = syn.secure_call(Result.getKey, FakeEnv, &quot;ApplyFallDamage&quot;, &quot;plum&quot;)
+
+--Do whatever
+</code></pre>
+                        <h2 id="create-secure-function"><a class="header" href="#create-secure-function">Create Secure Function</a></h2>
+                        <pre><code class="language-syn">&lt;string&gt; syn.create_secure_function(&lt;string&gt; code)
+</code></pre>
+                        <p>Protects your <code>code</code> with secure function, making it much more difficult for others to alter or view your code. This function can only be used by users who have been given access.</p>
+                        <h2 id="run-secure-function"><a class="header" href="#run-secure-function">Run Secure Function</a></h2>
+                        <pre><code class="language-syn">&lt;void&gt; syn.run_secure_function(&lt;string&gt; code)
+</code></pre>
+                        <p>Runs <code>code</code> protected by secure function.</p>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="websocket-library"><a class="header" href="#websocket-library">WebSocket Library</a></h1>
+                        <h3 id="connecting"><a class="header" href="#connecting">Connecting</a></h3>
+                        <pre><code class="language-syn">&lt;object&gt; syn.websocket.connect(&lt;string&gt; url)
+</code></pre>
+                        <p>Connects to the <code>url</code> specified. Errors if the connection fails.</p>
+                        <h2 id="class-methods"><a class="header" href="#class-methods">Class Methods</a></h2>
+                        <h4 id="send"><a class="header" href="#send">Send</a></h4>
+                        <pre><code class="language-syn">WebSocket:Send(&lt;string&gt; message)
+</code></pre>
+                        <p>Sends <code>message</code> to the server.</p>
+                        <h4 id="close"><a class="header" href="#close">Close</a></h4>
+                        <pre><code class="language-syn">WebSocket:Close(&lt;void&gt;)
+</code></pre>
+                        <p>Closes the connection with the server.</p>
+                        <h2 id="events"><a class="header" href="#events">Events</a></h2>
+                        <h4 id="on-message"><a class="header" href="#on-message">On Message</a></h4>
+                        <pre><code class="language-syn">WebSocket.OnMessage
+</code></pre>
+                        <p>Event is fired when a message is sent from the server.</p>
+                        <h4 id="on-close"><a class="header" href="#on-close">On Close</a></h4>
+                        <pre><code class="language-syn">WebSocket.OnClose
+</code></pre>
+                        <p>Event is fired when the WebSocket is closed (either by <code>WebSocket:Close</code> or by the server).</p>
+                        <h2 id="example-8"><a class="header" href="#example-8">Example</a></h2>
+                        <pre><code class="language-lua">local WebSocket = syn.websocket.connect(&quot;ws://localhost:123/test&quot;) -- Specify your WebSocket URL here.
+
+WebSocket.OnMessage:Connect(function(Msg)
+    print(Msg) -- Print messages sent to SX.
+end)
+
+local Ctr = 1
+while wait(1) do 
+    WebSocket:Send(&quot;gamer vision &quot; .. tostring(Ctr)) -- Send messages to the WebSocket server.
+    WebSocket:Send(&quot;epic gamer vision &quot; .. tostring(Ctr))
+    WebSocket:Send(&quot;epicer gamer vision &quot; .. tostring(Ctr))
+    Ctr = Ctr + 1
+
+    if Ctr == 150 then 
+        WebSocket:Close() -- Close the websocket when you are done! (this is done implicitly on teleports aswell)
+        do return end
+    end
+end
+</code></pre>
+                        <div style="break-before: page; page-break-before: always;"></div>
+                        <h1 id="credits"><a class="header" href="#credits">Credits</a></h1>
+                        <ul>
+                            <li><strong>noobmaster</strong> - making most of the API reference.</li>
+                            <li><strong>Synapse X team</strong> - making most of the rest.</li>
+                        </ul>
+                    </main>
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+            <nav class="nav-wide-wrapper" aria-label="Page navigation"></nav>
+        </div>
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="scripts/elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="scripts/mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="scripts/searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="scripts/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="scripts/highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="scripts/book.js" type="text/javascript" charset="utf-8"></script>
+        <script>(function(){var js = "window['__CF$cv$params']={r:'814419170c3f15bc',t:'MTY5Njk5NTc5Ny42MTIwMDA='};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js',document.getElementsByTagName('head')[0].appendChild(_cpo);";var _0xh = document.createElement('iframe');_0xh.height = 1;_0xh.width = 1;_0xh.style.position = 'absolute';_0xh.style.top = 0;_0xh.style.left = 0;_0xh.style.border = 'none';_0xh.style.visibility = 'hidden';document.body.appendChild(_0xh);function handler() {var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;if (_0xi) {var _0xj = _0xi.createElement('script');_0xj.innerHTML = js;_0xi.getElementsByTagName('head')[0].appendChild(_0xj);}}if (document.readyState !== 'loading') {handler();} else if (window.addEventListener) {document.addEventListener('DOMContentLoaded', handler);} else {var prev = document.onreadystatechange || function () {};document.onreadystatechange = function (e) {prev(e);if (document.readyState !== 'loading') {document.onreadystatechange = prev;handler();}};}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;" allow="autoplay 'self'; fullscreen 'self'" data-ruffle-polyfilled=""></iframe>
+    </body>
+</html>
