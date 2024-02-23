@@ -314,7 +314,10 @@
                var links = document.getElementsByTagName('a');
                for (var i = 0; i < links.length; i++) {
                   var link = links[i];
-                  link.setAttribute('href', "/actualmasteroogway.github.io" + link.getAttribute('href'));
+                  var href = link.getAttribute('href');
+                  if (href.startsWith("/")) {
+                     link.setAttribute('href', "/actualmasteroogway.github.io" + href);
+                  }
                }
             }
          };        
