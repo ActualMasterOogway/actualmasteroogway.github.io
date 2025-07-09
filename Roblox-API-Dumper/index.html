@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Dump Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="logo.png" alt="App Logo" id="appLogo" style="height: 50px; margin-bottom: 10px;"/> <!-- Placeholder for logo -->
+            <h1>API Dump Tool</h1>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="versionA">Version A (Newer/Current):</label>
+                <select id="versionA">
+                    <!-- Options will be populated by script.js -->
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="versionB">Version B (Older, for diff):</label>
+                <select id="versionB">
+                    <!-- Options will be populated by script.js -->
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="apiDumpFormat">Format:</label>
+                <select id="apiDumpFormat">
+                    <option value="HTML" selected>HTML</option>
+                    <option value="TXT">TXT</option>
+                    <option value="JSON">JSON</option>
+                    <!-- <option value="PNG">PNG</option> --> <!-- PNG deferred -->
+                </select>
+            </div>
+
+            <div class="control-group">
+                <input type="checkbox" id="fullDump" name="fullDump">
+                <label for="fullDump">Full Dump</label>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button id="viewApiDump">View API Dump</button>
+            <button id="compareVersions">Compare Versions</button>
+            <button id="downloadPngButton" title="Download current HTML view as PNG">Download PNG</button> 
+        </div>
+
+        <div class="status-bar">
+            <p id="status">Status: Ready</p>
+        </div>
+
+        <div class="output-area">
+            <h2>Output</h2>
+            <pre id="output">API dump will be shown here.</pre>
+            <div id="htmlOutput"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoVXM5RqaTRcUnqEkYCVrWF1uUqmjA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="script.js"></script>
+</body>
+</html>
