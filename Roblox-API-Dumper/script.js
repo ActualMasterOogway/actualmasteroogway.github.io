@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const option = new Option(versionInfo.hash, versionInfo.guid);
                 dropdown.add(option);
             });
-            if (availableStudioVersions.some(v => v.guid === currentValue)) { // Check if guid exists
+            if (availableStudioVersions.some(v => v.guid === currentValue)) { 
                 dropdown.value = currentValue;
             } else if (availableStudioVersions.length > 0) {
                 dropdown.value = availableStudioVersions[idx === 0 ? 0 : (availableStudioVersions.length > 1 ? 1 : 0)].guid;
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .filter(tag => tag && tag.trim() !== "" && tag !== "null"); 
     }
 
-    // --- HTML/TXT Generation (Single API Dump) ---
+    // --- HTML/TXT/Markdown Generation (Single API Dump) ---
     function renderHtmlSymbol(symbol) { return `<span class="symbol">${symbol}</span>`; }
     function renderTagsHtml(tagsArray = []) { 
         return (tagsArray || []).map(tag => `<span class="Tag">[${String(tag)}]</span>`).join(" "); 
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = renderHtmlSymbol("(");
         if (paramsArray && paramsArray.length > 0) {
             html += paramsArray.map(p => {
-                let typeCopy = JSON.parse(JSON.stringify(p.Type || {Name: 'unknown', Category: 'Primitive'})); // Add fallback for p.Type
+                let typeCopy = JSON.parse(JSON.stringify(p.Type || {Name: 'unknown', Category: 'Primitive'})); 
                 if (p.Default !== undefined && p.Default !== null && typeCopy.Name && !typeCopy.Name.endsWith("?")) typeCopy.Name += "?"; 
                 let paramHtml = `<span class="ParamName">${p.Name}</span>${renderHtmlSymbol(": ")}${renderLuaTypeHtml(typeCopy)}`;
                 if (p.Default !== undefined && p.Default !== null) { 
@@ -305,15 +305,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (sec.Read && sec.Write) {
                 let s = "";
                 if (sec.Read !== "None") s += `{${sec.Read}}`;
-                if (sec.Read !== sec.Write && sec.Write !== "None") s += (s ? " " : "") + `{${sec.Write}}`;
+                if (sec.Read !== sec.Write && sec.Write !== "None") s += (s ? " " : "") + `{${sec.Write}}`; 
                 return s;
             }
             if (sec.Type && sec.Type !== "None") return `{${sec.Type}}`;
             return "";
         };
-        const formatLuaTypeForTxt = (lt) => lt?.Name || "any";
+        const formatLuaTypeForTxt = (lt) => lt?.Name || "any"; 
         const formatParamsForTxt = (paramsArray = []) => 
-            `(${(paramsArray || []).map(p => `${p.Name}: ${formatLuaTypeForTxt(p.Type)}${p.Default !== undefined ? ` = ${p.Default}` : ''}`).join(", ")})`;
+            `(${(paramsArray || []).map(p => `${p.Name}: ${formatLuaTypeForTxt(p.Type || {Name:'unknown'})}${p.Default !== undefined ? ` = ${p.Default}` : ''}`).join(", ")})`;
 
         (apiData.Classes || []).sort((a,b)=>a.Name.localeCompare(b.Name)).forEach(c => {
             txt += `Class ${c.Name}${c.Superclass && c.Superclass !== "<<<ROOT>>>" ? ` : ${c.Superclass}` : ""} ${formatSecurityForTxt(c.Security)} ${formatTagsForTxt(c.Tags)}\n`;
@@ -341,11 +341,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Display Logic (Single API or Diff) ---
     function displayData(content, format, isDiff = false) {
         if (downloadPngButton) downloadPngButton.disabled = format !== "HTML" || !content;
-        if (outputDisplay) outputDisplay.style.display = (format === "TXT" || format === "JSON") ? 'block' : 'none';
+        // Ensure outputDisplay is used for MARKDOWN as well
+        if (outputDisplay) outputDisplay.style.display = (format === "TXT" || format === "JSON" || format === "MARKDOWN") ? 'block' : 'none';
         if (htmlOutputDisplay) htmlOutputDisplay.style.display = format === "HTML" ? 'block' : 'none';
 
         if (format === "HTML" && htmlOutputDisplay) htmlOutputDisplay.innerHTML = content || "";
-        else if (outputDisplay) outputDisplay.textContent = content || "";
+        else if (outputDisplay) outputDisplay.textContent = content || ""; // Also for MARKDOWN
 
         if (!content && !isDiff) setStatus("No data to display.", true);
     }
@@ -614,9 +615,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return html;
     }
     
-    function formatParamsForTxt(paramsArray = []) {
-        return `(${(paramsArray || []).map(p => `${p.Name}: ${p.Type?.Name || 'unknown'}${p.Default !== undefined ? ` = ${p.Default}` : ''}`).join(", ")})`;
-    }
+    const formatParamsForTxtDiff = (paramsArray = []) => 
+        `(${(paramsArray || []).map(p => `${p.Name}: ${p.Type?.Name || 'unknown'}${p.Default !== undefined ? ` = ${p.Default}` : ''}`).join(", ")})`;
 
     function generateDiffTxt(diffResult, oldApiData, newApiData) { 
         let txt = "";
@@ -627,9 +627,9 @@ document.addEventListener('DOMContentLoaded', () => {
             let detail = `${indent}* ${change.property || (change.type.includes("Tag") ? "Tag" : change.type.replace(/^(changed|added|removed)/, ""))}: `;
             if (change.type === 'addedTag') detail += `+ [${String(change.tag)}]`; 
             else if (change.type === 'removedTag') detail += `- [${String(change.tag)}]`; 
-            else if (change.property === "Parameters" || change.type === 'changedParametersDetail') { // Corrected condition
-                const fromStr = change.from ? formatParamsForTxt(change.from) : "N/A";
-                const toStr = change.to ? formatParamsForTxt(change.to) : "N/A";
+            else if (change.property === "Parameters" || change.type === 'changedParametersDetail') {
+                const fromStr = change.from ? formatParamsForTxtDiff(change.from) : "N/A"; 
+                const toStr = change.to ? formatParamsForTxtDiff(change.to) : "N/A"; 
                 detail += `From: ${fromStr} To: ${toStr}`;
             }
              else if (change.from !== undefined || change.to !== undefined) {
@@ -683,6 +683,309 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return txt.trim();
     }
+    
+    // --- Markdown Helper Functions ---
+    function formatTagsForMarkdown(tagsArray = []) {
+        return normalizeTagArray(tagsArray).map(tag => `\`[${tag}]\``).join(" "); // Added backticks for tags
+    }
+
+    function formatSecurityForMarkdown(securityObj) {
+        if (!securityObj) return "";
+        if (typeof securityObj === 'string' && securityObj !== "None") return `\`{${securityObj}}\``;
+        if (securityObj.Read && securityObj.Write) { 
+            const readSec = securityObj.Read !== "None" ? `\`{${securityObj.Read}}\`` : "";
+            const writePrefix = securityObj.Write !== "None" && securityObj.Read !== securityObj.Write ? "(Write) " : ""; 
+            const writeSec = securityObj.Write !== "None" ? `\`{${securityObj.Write}}\`` : "";
+            let md = readSec;
+            if (securityObj.Read !== securityObj.Write && writeSec) {
+                 md += (readSec ? " " : "") + writePrefix + writeSec;
+            } else if (!readSec && writeSec) {
+                 md = writePrefix + writeSec;
+            }
+            return md;
+        }
+        if (securityObj.Type && securityObj.Type !== "None") return `\`{${securityObj.Type}}\``;
+        return "";
+    }
+
+    function formatLuaTypeForMarkdown(luaTypeObj, useBackticks = true) { // useBackticks defaults to true
+        if (!luaTypeObj || !luaTypeObj.Name) return (useBackticks ? "`any`" : "any");
+        let name = luaTypeObj.Name;
+        const category = luaTypeObj.Category;
+        const subTypes = luaTypeObj.SubTypes || [];
+        const isOptional = name.endsWith('?');
+        const absoluteName = name.replace("?", "");
+        const luauTypeMappings = { 
+            "Dictionary": "`{ [string]: any }`", "Map": "`{ [string]: any }`", "Array": "`{ any }`",
+            "Objects": "`{ Instance }`", "Function": "`((...any) -> ...any)`",
+            "OptionalCoordinateFrame": "CFrame", "CoordinateFrame": "CFrame", 
+            "Content": "string", "ProtectedString": "string", "null": "`()`", "void": "`()`",
+            "int": "number", "int64": "number", "float": "number", "double": "number",
+            "bool": "boolean", "Variant": "any"
+        };
+        
+        let effectiveName = luauTypeMappings[absoluteName] || absoluteName;
+        let md = "";
+
+        if (category === "Enum") {
+            md = `Enum.${name.replace("?", "")}`;
+        } else if (absoluteName === "Tuple") {
+            md = `(${(subTypes.length > 0 ? subTypes.map(st => formatLuaTypeForMarkdown(st, false)).join(", ") : "...any")})`;
+        } else {
+            md = effectiveName;
+        }
+
+        if (isOptional && !md.endsWith("?") && !md.includes("`?`")) md += "?";
+        
+        return useBackticks && !luauTypeMappings[absoluteName]?.startsWith("`") ? `\`${md}\`` : md;
+    }
+
+    function formatParamsForMarkdown(paramsArray = []) {
+        if (!paramsArray || paramsArray.length === 0) return "()";
+        return `(${(paramsArray || []).map(p => {
+            let typeCopy = JSON.parse(JSON.stringify(p.Type || {Name: 'unknown', Category: 'Primitive'}));
+            if (p.Default !== undefined && p.Default !== null && typeCopy.Name && !typeCopy.Name.endsWith("?")) {
+                typeCopy.Name += "?"; 
+            }
+            let paramMd = `**${p.Name}**: ${formatLuaTypeForMarkdown(typeCopy)}`; 
+            if (p.Default !== undefined && p.Default !== null) {
+                let defaultVal = p.Default;
+                const typeAbsoluteName = (typeCopy.AbsoluteName || typeCopy.Name || "").replace("?", "");
+                if ((typeAbsoluteName === "string" || typeCopy.Category === "Enum") && !(String(defaultVal).startsWith('"') && String(defaultVal).endsWith('"'))) {
+                    defaultVal = `"${defaultVal}"`; 
+                }
+                paramMd += ` = \`${defaultVal}\``; 
+            }
+            return paramMd;
+        }).join(", ")})`;
+    }
+
+    // --- Markdown Generation (Single API Dump) ---
+    function generateApiMarkdown(apiData) {
+        if (!apiData) return "No API data to display for Markdown generation.";
+        let md = "";
+
+        const sortedClasses = (apiData.Classes || []).sort((a, b) => a.Name.localeCompare(b.Name));
+        sortedClasses.forEach(classDesc => {
+            md += `## Class: \`${classDesc.Name}\`\n`; // Class name in backticks
+            if (classDesc.Superclass && classDesc.Superclass !== "<<<ROOT>>>") {
+                md += `**Superclass:** \`${classDesc.Superclass}\`\n`;
+            }
+            const classTags = formatTagsForMarkdown(classDesc.Tags); 
+            const classSecurity = formatSecurityForMarkdown(classDesc.Security); 
+            if (classSecurity) md += `**Security:** ${classSecurity} `;
+            if (classTags) md += `**Tags:** ${classTags}`;
+            if (classSecurity || classTags) md += "\n";
+            md += "\n";
+
+            const sortedMembers = (classDesc.Members || []).sort((a, b) => ((a.MemberType || "Z").localeCompare(b.MemberType || "Z")) || a.Name.localeCompare(b.Name));
+            sortedMembers.forEach(member => {
+                const memberPrefix = member.MemberType === 'Function' || member.MemberType === 'Callback' ? `${classDesc.Name}:` : `${classDesc.Name}.`;
+                let memberSignature = `- **${member.MemberType}** \`${memberPrefix}${member.Name}\``;
+                
+                if (member.MemberType === "Property") {
+                    memberSignature += `: ${formatLuaTypeForMarkdown(member.ValueType)}`; 
+                } else if (member.MemberType === "Function" || member.MemberType === "Event" || member.MemberType === "Callback") {
+                    memberSignature += formatParamsForMarkdown(member.Parameters); 
+                    if (member.MemberType === "Function" || member.MemberType === "Callback") {
+                        memberSignature += ` -> ${formatLuaTypeForMarkdown(member.ReturnType)}`; 
+                    }
+                }
+                
+                const memberSecurity = formatSecurityForMarkdown(member.Security); 
+                const memberTags = formatTagsForMarkdown(member.Tags); 
+                const memberSerialization = member.MemberType === "Property" ? renderSerializationHtml(member.Serialization).replace(/<\/?span[^>]*>/g, "") : ""; 
+                
+                if (memberSecurity) memberSignature += ` ${memberSecurity}`;
+                if (memberSerialization && memberSerialization.trim() !== "[]") memberSignature += ` ${memberSerialization}`; // Avoid empty "[]"
+                if (memberTags) memberSignature += ` ${memberTags}`;
+                
+                if (member.ThreadSafety) {
+                    let tsValue = typeof member.ThreadSafety === 'object' ? member.ThreadSafety.Value : member.ThreadSafety;
+                    if(tsValue && tsValue !== "Unknown") memberSignature += ` \`[${tsValue}]\``; // Backticks for thread safety
+                }
+                md += `${memberSignature}\n`;
+            });
+            md += "\n";
+        });
+
+        const sortedEnums = (apiData.Enums || []).sort((a, b) => a.Name.localeCompare(b.Name));
+        sortedEnums.forEach(enumDesc => {
+            md += `## Enum: \`${enumDesc.Name}\`\n`; // Enum name in backticks
+            const enumTags = formatTagsForMarkdown(enumDesc.Tags); 
+            if (enumTags) md += `**Tags:** ${enumTags}\n`;
+            md += "\n";
+
+            (enumDesc.Items || []).sort((a, b) => a.Value - b.Value).forEach(item => {
+                md += `- \`${enumDesc.Name}.${item.Name}\` : **${item.Value}**`;
+                const itemTags = formatTagsForMarkdown(item.Tags); 
+                if (itemTags) md += ` ${itemTags}`;
+                md += "\n";
+            });
+            md += "\n";
+        });
+
+        return md.trim() || "No content generated for Markdown.";
+    }
+
+    // --- Markdown Generation (Diff) ---
+    function renderMemberMarkdown(member, className) {
+        const memberPrefix = member.MemberType === 'Function' || member.MemberType === 'Callback' ? `${className}:` : `${className}.`;
+        let memberSignature = `**${member.MemberType}** \`${memberPrefix}${member.Name}\``;
+        
+        if (member.MemberType === "Property") {
+            memberSignature += `: ${formatLuaTypeForMarkdown(member.ValueType)}`;
+        } else if (member.MemberType === "Function" || member.MemberType === "Event" || member.MemberType === "Callback") {
+            memberSignature += formatParamsForMarkdown(member.Parameters);
+            if (member.MemberType === "Function" || member.MemberType === "Callback") {
+                memberSignature += ` -> ${formatLuaTypeForMarkdown(member.ReturnType)}`;
+            }
+        }
+        
+        const memberSecurity = formatSecurityForMarkdown(member.Security);
+        const memberTags = formatTagsForMarkdown(member.Tags);
+        const memberSerialization = member.MemberType === "Property" ? renderSerializationHtml(member.Serialization).replace(/<\/?span[^>]*>/g, "") : "";
+        
+        if (memberSecurity) memberSignature += ` ${memberSecurity}`;
+        if (memberSerialization && memberSerialization.trim() !== "[]") memberSignature += ` ${memberSerialization}`;
+        if (memberTags) memberSignature += ` ${memberTags}`;
+        
+        if (member.ThreadSafety) {
+            let tsValue = typeof member.ThreadSafety === 'object' ? member.ThreadSafety.Value : member.ThreadSafety;
+            if(tsValue && tsValue !== "Unknown") memberSignature += ` \`[${tsValue}]\``;
+        }
+        return memberSignature;
+    }
+    
+    function renderEnumItemMarkdown(item, enumName) {
+         let itemSignature = `\`${enumName}.${item.Name}\` : **${item.Value}**`;
+         const itemTags = formatTagsForMarkdown(item.Tags);
+         if (itemTags) itemSignature += ` ${itemTags}`;
+         return itemSignature;
+    }
+
+    function generateDiffMarkdown(diffResult, oldApiData, newApiData) {
+        let md = "# API Differences (Markdown)\n\n";
+        if (!diffResult) return md + "_No diff data available._\n";
+
+        const { classes: classDiffs, enums: enumDiffs } = diffResult;
+
+        function formatChangeEntryMarkdown(change, indent = "  ") {
+            let entryMd = `${indent}* `;
+            const propertyName = change.property || (change.type.includes("Tag") ? "Tag" : change.type.replace(/^(changed|added|removed)/, ""));
+            entryMd += `**${propertyName.charAt(0).toUpperCase() + propertyName.slice(1)}:** `;
+
+            if (change.type === 'addedTag') {
+                entryMd += `+ ${formatTagsForMarkdown([change.tag])}`;
+            } else if (change.type === 'removedTag') {
+                entryMd += `- ${formatTagsForMarkdown([change.tag])}`;
+            } else if (change.from !== undefined || change.to !== undefined) {
+                let fromMd = "`N/A`", toMd = "`N/A`";
+                const prop = change.property;
+
+                if (prop === "ValueType" || prop === "ReturnType" || (change.type === 'changedLuaType' && prop)) {
+                    if(change.from) fromMd = formatLuaTypeForMarkdown(change.from);
+                    if(change.to) toMd = formatLuaTypeForMarkdown(change.to);
+                } else if (prop === "Security" || change.type === 'changedSecurity') {
+                    if(change.from) fromMd = formatSecurityForMarkdown(change.from);
+                    if(change.to) toMd = formatSecurityForMarkdown(change.to);
+                } else if (prop === "Serialization" || change.type === 'changedSerialization') {
+                    if(change.from) fromMd = renderSerializationHtml(change.from).replace(/<\/?span[^>]*>/g, ""); 
+                    if(change.to) toMd = renderSerializationHtml(change.to).replace(/<\/?span[^>]*>/g, ""); 
+                } else if (prop === "Parameters" || change.type === 'changedParametersDetail' || change.type === 'changedParametersCount') {
+                    if (change.type === 'changedParametersCount') {
+                         fromMd = `Count: \`${change.from}\``; toMd = `Count: \`${change.to}\``;
+                    } else {
+                        if(change.from) fromMd = formatParamsForMarkdown(change.from);
+                        if(change.to) toMd = formatParamsForMarkdown(change.to);
+                    }
+                } else { 
+                    fromMd = `\`${String(change.from !== undefined ? change.from : "N/A")}\``;
+                    toMd = `\`${String(change.to !== undefined ? change.to : "N/A")}\``;
+                }
+                entryMd += `~~${fromMd}~~ -> **${toMd}**`;
+            } else {
+                entryMd += `\`${JSON.stringify(change)}\``; 
+            }
+            return entryMd + "\n";
+        }
+        
+        md += "## Class Differences\n\n";
+        if (!classDiffs || ((classDiffs.added?.length || 0) === 0 && (classDiffs.removed?.length || 0) === 0 && (classDiffs.changed?.length || 0) === 0)) {
+            md += "_No class differences._\n\n";
+        } else {
+            (classDiffs.added || []).forEach(cls => {
+                md += `### + Added Class: \`${cls.Name}\`\n`;
+                md += generateApiMarkdown({ Classes: [cls] }).replace(/^## Class: .*?\n/, ""); 
+                md += "\n";
+            });
+            (classDiffs.removed || []).forEach(cls => {
+                md += `### - Removed Class: \`${cls.Name}\`\n`;
+                md += `~~~\n${generateApiMarkdown({ Classes: [cls] }).replace(/^## Class: .*?\n/, "")}\n~~~\n\n`; 
+            });
+            (classDiffs.changed || []).forEach(cc => {
+                md += `### ~ Changed Class: \`${cc.name}\`\n`;
+                if (cc.changes && cc.changes.length > 0) {
+                    md += "**Class-Level Changes:**\n";
+                    cc.changes.forEach(change => md += formatChangeEntryMarkdown(change));
+                }
+                if (cc.memberDiff) {
+                    const md_m = cc.memberDiff; 
+                    if ((md_m.added?.length || 0) > 0 || (md_m.removed?.length || 0) > 0 || (md_m.changed?.length || 0) > 0) {
+                        md += "**Member Changes:**\n";
+                        (md_m.added || []).forEach(m => {
+                            md += `  + **Added Member:** ${renderMemberMarkdown(m, cc.name)}\n`;
+                        });
+                        (md_m.removed || []).forEach(m => {
+                            md += `  - **Removed Member:** ~~${renderMemberMarkdown(m, cc.name)}~~\n`;
+                        });
+                        (md_m.changed || []).forEach(mc => {
+                            md += `  ~ **Changed Member:** ${renderMemberMarkdown(mc.newMember, cc.name)}\n`; 
+                            (mc.changes || []).forEach(change => md += formatChangeEntryMarkdown(change, "    "));
+                        });
+                    }
+                }
+                md += "\n";
+            });
+        }
+
+        md += "## Enum Differences\n\n";
+        if (!enumDiffs || ((enumDiffs.added?.length || 0) === 0 && (enumDiffs.removed?.length || 0) === 0 && (enumDiffs.changed?.length || 0) === 0)) {
+            md += "_No enum differences._\n\n";
+        } else {
+            (enumDiffs.added || []).forEach(enm => {
+                md += `### + Added Enum: \`${enm.Name}\`\n`;
+                md += generateApiMarkdown({ Enums: [enm] }).replace(/^## Enum: .*?\n/, "");
+                md += "\n";
+            });
+            (enumDiffs.removed || []).forEach(enm => {
+                md += `### - Removed Enum: \`${enm.Name}\`\n`;
+                md += `~~~\n${generateApiMarkdown({ Enums: [enm] }).replace(/^## Enum: .*?\n/, "")}\n~~~\n\n`;
+            });
+            (enumDiffs.changed || []).forEach(ec => {
+                md += `### ~ Changed Enum: \`${ec.name}\`\n`;
+                if (ec.changes && ec.changes.length > 0) {
+                    md += "**Enum-Level Changes:**\n";
+                    ec.changes.forEach(change => md += formatChangeEntryMarkdown(change));
+                }
+                if (ec.itemDiff) {
+                    const id = ec.itemDiff;
+                     if ((id.added?.length || 0) > 0 || (id.removed?.length || 0) > 0 || (id.changed?.length || 0) > 0) {
+                        md += "**Enum Item Changes:**\n";
+                        (id.added || []).forEach(item => md += `  + **Added Item:** ${renderEnumItemMarkdown(item, ec.name)}\n`);
+                        (id.removed || []).forEach(item => md += `  - **Removed Item:** ~~${renderEnumItemMarkdown(item, ec.name)}~~\n`);
+                        (id.changed || []).forEach(ic => {
+                            md += `  ~ **Changed Item:** ${renderEnumItemMarkdown(ic.newItem, ec.name)}\n`; 
+                            (ic.changes || []).forEach(change => md += formatChangeEntryMarkdown(change, "    "));
+                        });
+                    }
+                }
+                md += "\n";
+            });
+        }
+        return md.trim();
+    }
+
 
     // --- Event Listeners ---
     if (viewApiDumpButton) viewApiDumpButton.addEventListener('click', async () => {
@@ -691,10 +994,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const isFullDump = fullDumpCheckbox.checked;
         if (!versionAGuid) { setStatus("Please select Version A.", true); return; }
         const apiData = await fetchApiDump(versionAGuid, isFullDump, "Version A");
-        const content = apiData ? (selectedFormat === "HTML" ? generateApiHtml(apiData) : 
-                               (selectedFormat === "TXT" ? generateApiTxt(apiData) : 
-                                JSON.stringify(apiData, null, 2))) 
-                      : "Failed to load API data.";
+        let content = "Failed to load API data.";
+        if (apiData) {
+            if (selectedFormat === "HTML") content = generateApiHtml(apiData);
+            else if (selectedFormat === "TXT") content = generateApiTxt(apiData);
+            else if (selectedFormat === "MARKDOWN") content = generateApiMarkdown(apiData);
+            else if (selectedFormat === "JSON") content = JSON.stringify(apiData, null, 2);
+            else content = "Unsupported format selected.";
+        }
         displayData(content, selectedFormat);
     });
 
@@ -725,15 +1032,21 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (selectedFormat === "TXT") {
             diffContent = generateDiffTxt(diffResult, oldApiData, newApiData);
             console.log("Generated TXT Diff Content Length:", diffContent?.length);
-        } else { 
+        } else if (selectedFormat === "MARKDOWN") { 
+            diffContent = generateDiffMarkdown(diffResult, oldApiData, newApiData);
+            console.log("Generated Markdown Diff Content Length:", diffContent?.length);
+        } else if (selectedFormat === "JSON") { 
             diffContent = JSON.stringify(diffResult, null, 2);
             console.log("Generated JSON Diff Content Length:", diffContent?.length);
+        } else {
+            diffContent = "Unsupported format for diff.";
         }
+
 
         const noClassChanges = !diffResult.classes || ((diffResult.classes.added?.length || 0) === 0 && (diffResult.classes.removed?.length || 0) === 0 && (diffResult.classes.changed?.length || 0) === 0);
         const noEnumChanges = !diffResult.enums || ((diffResult.enums.added?.length || 0) === 0 && (diffResult.enums.removed?.length || 0) === 0 && (diffResult.enums.changed?.length || 0) === 0);
 
-        if (!diffContent && (selectedFormat === "HTML" || selectedFormat === "TXT")) {
+        if (!diffContent && (selectedFormat === "HTML" || selectedFormat === "TXT" || selectedFormat === "MARKDOWN")) {
              setStatus("Diff content generation resulted in empty output. Check console.", true);
         } else if (noClassChanges && noEnumChanges) {
              setStatus("No differences found.", false); 
@@ -748,6 +1061,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (apiDumpFormatDropdown) apiDumpFormatDropdown.addEventListener('change', (event) => {
         const selectedFormat = event.target.value;
         if (event.isTrusted) { 
+            if (selectedFormat === 'HTML') {
+                if (htmlOutputDisplay) htmlOutputDisplay.style.display = 'block';
+                if (outputDisplay) outputDisplay.style.display = 'none';
+            } else { // TXT, JSON, MARKDOWN
+                if (htmlOutputDisplay) htmlOutputDisplay.style.display = 'none';
+                if (outputDisplay) outputDisplay.style.display = 'block';
+            }
             displayData("Select an action to view data.", selectedFormat); 
             setStatus(`Format changed to ${selectedFormat}. Select an action.`);
         }
