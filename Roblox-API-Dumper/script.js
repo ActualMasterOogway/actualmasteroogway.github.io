@@ -30,38 +30,42 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`HTTP ${response.status} fetching DeployHistory.txt`);
             const text = await response.text();
             
-            // Regex to capture version GUID and git hash
-            // Example: New Studio64 version-aeed6bba24764418 at 4/9/2025 3:15:13 PM, file version: 0, 668, 0, 6680661, git hash: 0.668.0.6680661 ...
-            const regex = /New Studio64 (version-[0-9a-fA-F]+)[^,]*?,[^,]*?,[^,]*?, git hash: ([0-9a-zA-Z.-]+)/g;
-            const versionsMap = new Map(); // Use a map to handle duplicate GUIDs, keeping the first hash seen
+            // Regex to capture version GUID and file version numbers
+            // Example: New Studio64 version-aeed6bba24764418 at 4/9/2025 3:15:13 PM, file version: 0, 668, 0, 6680661, git hash: ...
+            const regex = /New Studio64 (version-[0-9a-fA-F]+).*?file version: (\d+), (\d+), (\d+), (\d+)/g;
+            const versionsMap = new Map(); 
             let match;
             while ((match = regex.exec(text)) !== null) {
                 const guid = match[1];
-                const hash = match[2];
-                if (!versionsMap.has(guid)) { // Keep the first entry for a GUID (usually newest if file is chronological)
-                    versionsMap.set(guid, { guid, hash });
+                const v1 = match[2];
+                const v2 = match[3];
+                const v3 = match[4];
+                const v4 = match[5];
+                const reconstructedHash = `${v1}.${v2}.${v3}.${v4}`; // Construct hash from file version parts
+
+                if (!versionsMap.has(guid)) { 
+                    versionsMap.set(guid, { guid, hash: reconstructedHash });
                 }
             }
             
-            // Convert map values to array and reverse to have newest first (as they appear last in file and map preserves insertion order)
             availableStudioVersions = Array.from(versionsMap.values()).reverse(); 
 
             if (availableStudioVersions.length === 0) {
-                setStatus("No Studio64 versions with hashes found. Using fallback.", true);
-                availableStudioVersions = [
-                    { guid: "0.618.0.6180417", hash: "0.618.0.6180417 (fallback)" },
-                    { guid: "0.617.0.6170388", hash: "0.617.0.6170388 (fallback)" },
-                    { guid: "0.616.0.6160393", hash: "0.616.0.6160393 (fallback)" }
+                setStatus("No Studio64 versions found from file version. Using fallback.", true);
+                availableStudioVersions = [ // Updated fallback structure
+                    { guid: "version-fallback-guid-1", hash: "0.620.0.6200000" },
+                    { guid: "version-fallback-guid-2", hash: "0.619.0.6190000" },
+                    { guid: "version-fallback-guid-3", hash: "0.618.0.6180417" }
                 ]; 
             } else {
-                setStatus(`Found ${availableStudioVersions.length} unique Studio64 versions with hashes.`);
+                setStatus(`Found ${availableStudioVersions.length} unique Studio64 versions (using file version for display).`);
             }
         } catch (error) {
             setStatus(`Error fetching/parsing DeployHistory: ${error.message}. Using fallback. (Check CORS)`, true);
-            availableStudioVersions = [
-                { guid: "0.618.0.6180417", hash: "0.618.0.6180417 (fallback)" },
-                { guid: "0.617.0.6170388", hash: "0.617.0.6170388 (fallback)" },
-                { guid: "0.616.0.6160393", hash: "0.616.0.6160393 (fallback)" }
+            availableStudioVersions = [ // Updated fallback structure
+                { guid: "version-fallback-guid-1", hash: "0.620.0.6200000" },
+                { guid: "version-fallback-guid-2", hash: "0.619.0.6190000" },
+                { guid: "version-fallback-guid-3", hash: "0.618.0.6180417" }
             ];
         } finally {
             populateVersionDropdowns();
