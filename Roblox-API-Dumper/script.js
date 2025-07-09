@@ -30,8 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`HTTP ${response.status} fetching DeployHistory.txt`);
             const text = await response.text();
             
-            // Regex to capture version GUID and file version numbers
-            // Example: New Studio64 version-aeed6bba24764418 at 4/9/2025 3:15:13 PM, file version: 0, 668, 0, 6680661, git hash: ...
             const regex = /New Studio64 (version-[0-9a-fA-F]+).*?file version: (\d+), (\d+), (\d+), (\d+)/g;
             const versionsMap = new Map(); 
             let match;
@@ -41,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const v2 = match[3];
                 const v3 = match[4];
                 const v4 = match[5];
-                const reconstructedHash = `${v1}.${v2}.${v3}.${v4}`; // Construct hash from file version parts
+                const reconstructedHash = `${v1}.${v2}.${v3}.${v4}`; 
 
                 if (!versionsMap.has(guid)) { 
                     versionsMap.set(guid, { guid, hash: reconstructedHash });
@@ -52,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (availableStudioVersions.length === 0) {
                 setStatus("No Studio64 versions found from file version. Using fallback.", true);
-                availableStudioVersions = [ // Updated fallback structure
+                availableStudioVersions = [ 
                     { guid: "version-fallback-guid-1", hash: "0.620.0.6200000" },
                     { guid: "version-fallback-guid-2", hash: "0.619.0.6190000" },
                     { guid: "version-fallback-guid-3", hash: "0.618.0.6180417" }
@@ -62,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             setStatus(`Error fetching/parsing DeployHistory: ${error.message}. Using fallback. (Check CORS)`, true);
-            availableStudioVersions = [ // Updated fallback structure
+            availableStudioVersions = [ 
                 { guid: "version-fallback-guid-1", hash: "0.620.0.6200000" },
                 { guid: "version-fallback-guid-2", hash: "0.619.0.6190000" },
                 { guid: "version-fallback-guid-3", hash: "0.618.0.6180417" }
@@ -76,20 +74,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateVersionDropdowns() {
         [versionADropdown, versionBDropdown].forEach((dropdown, idx) => {
             if (!dropdown) return;
-            const currentValueGuid = dropdown.value; // Store the currently selected GUID
-            dropdown.innerHTML = ""; // Clear existing options
+            const currentValue = dropdown.value;
+            dropdown.innerHTML = "";
             availableStudioVersions.forEach(versionInfo => {
-                const option = new Option(versionInfo.hash, versionInfo.guid); // Display hash, value is GUID
+                const option = new Option(versionInfo.hash, versionInfo.guid);
                 dropdown.add(option);
             });
-
-            // Try to restore previous selection or set default
-            if (currentValueGuid && availableStudioVersions.some(v => v.guid === currentValueGuid)) {
-                dropdown.value = currentValueGuid;
+            if (availableStudioVersions.some(v => v.guid === currentValue)) { // Check if guid exists
+                dropdown.value = currentValue;
             } else if (availableStudioVersions.length > 0) {
-                // Set default: versionA to newest, versionB to second newest (or newest if only one)
-                const defaultGuid = availableStudioVersions[idx === 0 ? 0 : (availableStudioVersions.length > 1 ? 1 : 0)].guid;
-                dropdown.value = defaultGuid;
+                dropdown.value = availableStudioVersions[idx === 0 ? 0 : (availableStudioVersions.length > 1 ? 1 : 0)].guid;
             }
         });
     }
@@ -138,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(tag => {
                 if (typeof tag === 'object' && tag !== null) {
                     console.warn("Normalizing object tag:", tag);
-                    // Try to find PreferredDescriptorName, then Name, then name, otherwise filter out
                     return String(tag.PreferredDescriptorName || tag.Name || tag.name || null); 
                 }
                 return String(tag); 
@@ -146,10 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .filter(tag => tag && tag.trim() !== "" && tag !== "null"); 
     }
 
-
     // --- HTML/TXT Generation (Single API Dump) ---
     function renderHtmlSymbol(symbol) { return `<span class="symbol">${symbol}</span>`; }
-    function renderTagsHtml(tagsArray = []) { // Expects already normalized tags (strings)
+    function renderTagsHtml(tagsArray = []) { 
         return (tagsArray || []).map(tag => `<span class="Tag">[${String(tag)}]</span>`).join(" "); 
     }
     function renderSecurityHtml(securityObj) { 
@@ -219,8 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = renderHtmlSymbol("(");
         if (paramsArray && paramsArray.length > 0) {
             html += paramsArray.map(p => {
-                let typeCopy = JSON.parse(JSON.stringify(p.Type)); 
-                if (p.Default !== undefined && p.Default !== null && !typeCopy.Name.endsWith("?")) typeCopy.Name += "?"; 
+                let typeCopy = JSON.parse(JSON.stringify(p.Type || {Name: 'unknown', Category: 'Primitive'})); // Add fallback for p.Type
+                if (p.Default !== undefined && p.Default !== null && typeCopy.Name && !typeCopy.Name.endsWith("?")) typeCopy.Name += "?"; 
                 let paramHtml = `<span class="ParamName">${p.Name}</span>${renderHtmlSymbol(": ")}${renderLuaTypeHtml(typeCopy)}`;
                 if (p.Default !== undefined && p.Default !== null) { 
                     let defaultVal = p.Default;
@@ -306,28 +298,40 @@ document.addEventListener('DOMContentLoaded', () => {
     function generateApiTxt(apiData) { 
         if (!apiData) return "No API data to display.";
         let txt = "";
-        const formatTags = (tags = []) => normalizeTagArray(tags).map(t => `[${t}]`).join(" "); 
-        const formatSecurity = (sec) => { /* ... */ return sec ? JSON.stringify(sec) : ""; };
-        const formatLuaType = (lt) => lt ? lt.Name : "any";
-        const formatParams = (params = []) => `(${(params || []).map(p => `${p.Name}: ${formatLuaType(p.Type)}`).join(", ")})`;
+        const formatTagsForTxt = (tags = []) => normalizeTagArray(tags).map(t => `[${t}]`).join(" "); 
+        const formatSecurityForTxt = (sec) => { 
+            if (!sec) return "";
+            if (typeof sec === 'string' && sec !== "None") return `{${sec}}`;
+            if (sec.Read && sec.Write) {
+                let s = "";
+                if (sec.Read !== "None") s += `{${sec.Read}}`;
+                if (sec.Read !== sec.Write && sec.Write !== "None") s += (s ? " " : "") + `{${sec.Write}}`;
+                return s;
+            }
+            if (sec.Type && sec.Type !== "None") return `{${sec.Type}}`;
+            return "";
+        };
+        const formatLuaTypeForTxt = (lt) => lt?.Name || "any";
+        const formatParamsForTxt = (paramsArray = []) => 
+            `(${(paramsArray || []).map(p => `${p.Name}: ${formatLuaTypeForTxt(p.Type)}${p.Default !== undefined ? ` = ${p.Default}` : ''}`).join(", ")})`;
 
         (apiData.Classes || []).sort((a,b)=>a.Name.localeCompare(b.Name)).forEach(c => {
-            txt += `Class ${c.Name}${c.Superclass && c.Superclass !== "<<<ROOT>>>" ? ` : ${c.Superclass}` : ""} ${formatSecurity(c.Security)} ${formatTags(c.Tags)}\n`;
+            txt += `Class ${c.Name}${c.Superclass && c.Superclass !== "<<<ROOT>>>" ? ` : ${c.Superclass}` : ""} ${formatSecurityForTxt(c.Security)} ${formatTagsForTxt(c.Tags)}\n`;
             (c.Members || []).sort((a,b)=>a.Name.localeCompare(b.Name)).forEach(m => {
                 txt += `\t${m.MemberType} ${c.Name}${m.MemberType === 'Function' || m.MemberType === 'Callback' ? ':' : '.'}${m.Name}`;
-                if (m.MemberType === "Property") txt += `: ${formatLuaType(m.ValueType)}`;
+                if (m.MemberType === "Property") txt += `: ${formatLuaTypeForTxt(m.ValueType)}`;
                 else if (m.MemberType === "Function" || m.MemberType === "Event" || m.MemberType === "Callback") {
-                    txt += formatParams(m.Parameters);
-                    if (m.ReturnType) txt += ` -> ${formatLuaType(m.ReturnType)}`;
+                    txt += formatParamsForTxt(m.Parameters);
+                    if (m.ReturnType) txt += ` -> ${formatLuaTypeForTxt(m.ReturnType)}`;
                 }
-                txt += ` ${formatSecurity(m.Security)} ${formatTags(m.Tags)}\n`;
+                txt += ` ${formatSecurityForTxt(m.Security)} ${formatTagsForTxt(m.Tags)}\n`;
             });
             txt += "\n";
         });
         (apiData.Enums || []).sort((a,b)=>a.Name.localeCompare(b.Name)).forEach(e => {
-            txt += `Enum ${e.Name} ${formatTags(e.Tags)}\n`;
+            txt += `Enum ${e.Name} ${formatTagsForTxt(e.Tags)}\n`;
             (e.Items || []).sort((a,b)=>a.Value - b.Value).forEach(i => {
-                txt += `\tEnumItem ${e.Name}.${i.Name} : ${i.Value} ${formatTags(i.Tags)}\n`;
+                txt += `\tEnumItem ${e.Name}.${i.Name} : ${i.Value} ${formatTagsForTxt(i.Tags)}\n`;
             });
             txt += "\n";
         });
@@ -378,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const oldParams = oldP || []; const newParams = newP || [];
         const oldStr = JSON.stringify(oldParams.map(p=>({N:p.Name, T:p.Type?.Name, D:p.Default}))); 
         const newStr = JSON.stringify(newParams.map(p=>({N:p.Name, T:p.Type?.Name, D:p.Default})));
-        if (oldStr !== newStr) { changeList.push({ type: 'changedParametersDetail', from: oldParams, to: newParams, context }); return true; }
+        if (oldStr !== newStr) { changeList.push({ type: 'changedParametersDetail', property: 'Parameters', from: oldParams, to: newParams, context }); return true; }
         return false;
     }
     function compareSerialization(oldS, newS, changeList, context = null) {
@@ -609,6 +613,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return html;
     }
+    
+    function formatParamsForTxt(paramsArray = []) {
+        return `(${(paramsArray || []).map(p => `${p.Name}: ${p.Type?.Name || 'unknown'}${p.Default !== undefined ? ` = ${p.Default}` : ''}`).join(", ")})`;
+    }
+
     function generateDiffTxt(diffResult, oldApiData, newApiData) { 
         let txt = "";
         if (!diffResult) return "No diff data to display.";
@@ -618,7 +627,12 @@ document.addEventListener('DOMContentLoaded', () => {
             let detail = `${indent}* ${change.property || (change.type.includes("Tag") ? "Tag" : change.type.replace(/^(changed|added|removed)/, ""))}: `;
             if (change.type === 'addedTag') detail += `+ [${String(change.tag)}]`; 
             else if (change.type === 'removedTag') detail += `- [${String(change.tag)}]`; 
-            else if (change.from !== undefined || change.to !== undefined) {
+            else if (change.property === "Parameters" || change.type === 'changedParametersDetail') { // Corrected condition
+                const fromStr = change.from ? formatParamsForTxt(change.from) : "N/A";
+                const toStr = change.to ? formatParamsForTxt(change.to) : "N/A";
+                detail += `From: ${fromStr} To: ${toStr}`;
+            }
+             else if (change.from !== undefined || change.to !== undefined) {
                 const fromStr = String(change.from !== undefined ? change.from : "N/A");
                 const toStr = String(change.to !== undefined ? change.to : "N/A");
                 detail += `From: '${fromStr}' To: '${toStr}'`;
@@ -751,7 +765,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setStatus("No HTML to render. View API dump/diff in HTML first.", true); return;
         }
         if (typeof html2canvas === 'undefined') {
-            setStatus("html2canvas library not loaded.", true); return;
+            setStatus("html2canvas library not loaded. Check SRI hash in index.html or network connection.", true); return;
         }
         setStatus("Rendering HTML to PNG...");
         toggleLoading(true, "Rendering PNG...");
