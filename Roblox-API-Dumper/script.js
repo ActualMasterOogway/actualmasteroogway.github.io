@@ -159,8 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (absoluteName === "Objects") {
              html += `${renderHtmlSymbol("{ ")}<span class="Type">Instance</span>${renderHtmlSymbol(" }")}`;
         } else if (absoluteName === "Function") {
-            if(isOptional && !effectiveName.startsWith('(')) html += renderHtmlSymbol("("); // Wrap optional functions
-            html += `<span class="Type">${effectiveName}</span>`; // Use mapped name directly
+            if(isOptional && !effectiveName.startsWith('(')) html += renderHtmlSymbol("("); 
+            html += `<span class="Type">${effectiveName}</span>`; 
             if(isOptional && !effectiveName.startsWith('(')) html += renderHtmlSymbol(")");
         } else if (absoluteName === "null" || absoluteName === "void") {
             html += renderHtmlSymbol("()");
@@ -265,16 +265,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!apiData) return "No API data to display.";
         let txt = "";
         const formatTags = (tags = []) => tags.map(t => `[${t}]`).join(" ");
-        const formatSecurity = (sec) => { /* ... simplified ... */ return sec ? JSON.stringify(sec) : ""; };
+        const formatSecurity = (sec) => { 
+            if (!sec) return "";
+            if (typeof sec === 'string' && sec !== "None") return `{${sec}}`;
+            if (sec.Read && sec.Write) {
+                let s = "";
+                if (sec.Read !== "None") s += `{${sec.Read}}`;
+                if (sec.Read !== sec.Write && sec.Write !== "None") s += (s ? " " : "") + `{${sec.Write}}`;
+                return s;
+            }
+            if (sec.Type && sec.Type !== "None") return `{${sec.Type}}`;
+            return "";
+        };
         const formatLuaType = (lt) => lt ? lt.Name : "any";
-        const formatParams = (params = []) => `(${params.map(p => `${p.Name}: ${formatLuaType(p.Type)}`).join(", ")})`;
+        const formatParams = (params = []) => `(${(params || []).map(p => `${p.Name}: ${formatLuaType(p.Type)}`).join(", ")})`;
 
         (apiData.Classes || []).sort((a,b)=>a.Name.localeCompare(b.Name)).forEach(c => {
-            txt += `Class ${c.Name}${c.Superclass !== "<<<ROOT>>>" ? ` : ${c.Superclass}` : ""} ${formatSecurity(c.Security)} ${formatTags(c.Tags)}\n`;
+            txt += `Class ${c.Name}${c.Superclass && c.Superclass !== "<<<ROOT>>>" ? ` : ${c.Superclass}` : ""} ${formatSecurity(c.Security)} ${formatTags(c.Tags)}\n`;
             (c.Members || []).sort((a,b)=>a.Name.localeCompare(b.Name)).forEach(m => {
-                txt += `\t${m.MemberType} ${c.Name}${m.MemberType === 'Function' ? ':' : '.'}${m.Name}`;
+                txt += `\t${m.MemberType} ${c.Name}${m.MemberType === 'Function' || m.MemberType === 'Callback' ? ':' : '.'}${m.Name}`;
                 if (m.MemberType === "Property") txt += `: ${formatLuaType(m.ValueType)}`;
-                else if (m.MemberType === "Function" || m.MemberType === "Event") {
+                else if (m.MemberType === "Function" || m.MemberType === "Event" || m.MemberType === "Callback") {
                     txt += formatParams(m.Parameters);
                     if (m.ReturnType) txt += ` -> ${formatLuaType(m.ReturnType)}`;
                 }
@@ -325,12 +336,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (oldStr !== newStr) { changeList.push({ type: 'changedSecurity', from: oldSec, to: newSec, context }); return true; }
         return false;
     }
-    function compareLuaType(oldType, newType, changeList, context = null) { // `context` here is the property name like 'ValueType'
+    function compareLuaType(oldType, newType, changeList, context = null) { 
         const oldStr = JSON.stringify(oldType || null); const newStr = JSON.stringify(newType || null);
         if (oldStr !== newStr) { changeList.push({ type: 'changedLuaType', property: context, from: oldType, to: newType }); return true; }
         return false;
     }
-    function compareParameters(oldP = [], newP = [], changeList, context = null) {
+    function compareParameters(oldP = [], newP = [], changeList, context = null) { 
         const oldParams = oldP || []; const newParams = newP || [];
         const oldStr = JSON.stringify(oldParams.map(p=>({N:p.Name, T:p.Type?.Name, D:p.Default}))); 
         const newStr = JSON.stringify(newParams.map(p=>({N:p.Name, T:p.Type?.Name, D:p.Default})));
@@ -386,43 +397,91 @@ document.addEventListener('DOMContentLoaded', () => {
         mapOld.forEach((oldI, name) => { if (!mapNew.has(name)) diff.removed.push(oldI); });
         return diff;
     }
+
     function generateDiff(oldApiData, newApiData) {
         const diffResult = { 
             classes: { added: [], removed: [], changed: [] }, 
             enums: { added: [], removed: [], changed: [] } 
         };
+    
         oldApiData = oldApiData || { Classes: [], Enums: [] };
         newApiData = newApiData || { Classes: [], Enums: [] };
         oldApiData.Classes = oldApiData.Classes || []; oldApiData.Enums = oldApiData.Enums || [];
         newApiData.Classes = newApiData.Classes || []; newApiData.Enums = newApiData.Enums || [];
-
-        const oldCMap = mapByName(oldApiData.Classes); const newCMap = mapByName(newApiData.Classes);
-        newCMap.forEach((newC, name) => {
-            const oldC = oldCMap.get(name);
-            if (!oldC) { diffResult.classes.added.push(newC); return; }
-            const changes = [];
-            compareSimpleValue(oldC.Superclass, newC.Superclass, changes, "Superclass");
-            compareTags(oldC.Tags, newC.Tags, changes, "Class Tags"); // Clarified context
-            compareSecurity(oldC.Security, newC.Security, changes, "Class Security"); // Clarified context
-            const memberDiff = diffMembers(oldC.Members, newC.Members, name);
-            if (changes.length > 0 || memberDiff.added.length || memberDiff.removed.length || memberDiff.changed.length) {
-                diffResult.classes.changed.push({ name, oldClass: oldC, newClass: newC, changes, memberDiff });
+    
+        const oldClassesMap = mapByName(oldApiData.Classes);
+        const newClassesMap = mapByName(newApiData.Classes);
+        const processedOldClassNames = new Set();
+    
+        newClassesMap.forEach((newC, className) => {
+            const oldC = oldClassesMap.get(className);
+            if (!oldC) { 
+                diffResult.classes.added.push(newC);
+            } else { 
+                processedOldClassNames.add(className); 
+                const classSpecificChanges = [];
+                compareSimpleValue(oldC.Superclass, newC.Superclass, classSpecificChanges, "Superclass");
+                compareTags(oldC.Tags, newC.Tags, classSpecificChanges, "Class Tags");
+                compareSecurity(oldC.Security, newC.Security, classSpecificChanges, "Class Security");
+                
+                const memberDiff = diffMembers(oldC.Members, newC.Members, className);
+                
+                if (classSpecificChanges.length > 0 || 
+                    (memberDiff.added && memberDiff.added.length > 0) || 
+                    (memberDiff.removed && memberDiff.removed.length > 0) || 
+                    (memberDiff.changed && memberDiff.changed.length > 0)) {
+                    diffResult.classes.changed.push({ 
+                        name: className, 
+                        oldClass: oldC, 
+                        newClass: newC, 
+                        changes: classSpecificChanges, 
+                        memberDiff 
+                    });
+                }
             }
         });
-        oldCMap.forEach((oldC, name) => { if (!newCMap.has(name)) diffResult.classes.removed.push(oldC); });
+    
+        oldClassesMap.forEach((oldC, className) => {
+            if (!processedOldClassNames.has(className)) { 
+                diffResult.classes.removed.push(oldC);
+            }
+        });
+    
+        const oldEnumsMap = mapByName(oldApiData.Enums);
+        const newEnumsMap = mapByName(newApiData.Enums);
+        const processedOldEnumNames = new Set();
+    
+        newEnumsMap.forEach((newE, enumName) => {
+            const oldE = oldEnumsMap.get(enumName);
+            if (!oldE) {
+                diffResult.enums.added.push(newE);
+            } else {
+                processedOldEnumNames.add(enumName);
+                const enumSpecificChanges = [];
+                compareTags(oldE.Tags, newE.Tags, enumSpecificChanges, "Enum Tags");
+                const itemDiff = diffEnumItems(oldE.Items, newE.Items, enumName);
+    
+                if (enumSpecificChanges.length > 0 ||
+                    (itemDiff.added && itemDiff.added.length > 0) ||
+                    (itemDiff.removed && itemDiff.removed.length > 0) ||
+                    (itemDiff.changed && itemDiff.changed.length > 0)) {
+                    diffResult.enums.changed.push({
+                        name: enumName,
+                        oldEnum: oldE,
+                        newEnum: newE,
+                        changes: enumSpecificChanges,
+                        itemDiff
+                    });
+                }
+            }
+        });
+    
+        oldEnumsMap.forEach((oldE, enumName) => {
+            if (!processedOldEnumNames.has(enumName)) {
+                diffResult.enums.removed.push(oldE);
+            }
+        });
         
-        const oldEMap = mapByName(oldApiData.Enums); const newEMap = mapByName(newApiData.Enums);
-        newEMap.forEach((newE, name) => {
-            const oldE = oldEMap.get(name);
-            if (!oldE) { diffResult.enums.added.push(newE); return; }
-            const changes = [];
-            compareTags(oldE.Tags, newE.Tags, changes, "Enum Tags"); // Clarified context
-            const itemDiff = diffEnumItems(oldE.Items, newE.Items, name);
-            if (changes.length > 0 || itemDiff.added.length || itemDiff.removed.length || itemDiff.changed.length) {
-                diffResult.enums.changed.push({ name, oldEnum: oldE, newEnum: newE, changes, itemDiff });
-            }
-        });
-        oldEMap.forEach((oldE, name) => { if (!newEMap.has(name)) diffResult.enums.removed.push(oldE); });
         return diffResult;
     }
 
@@ -430,7 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getDiffClass(changeType = "") { 
         if (changeType.startsWith('added')) return 'Added';
         if (changeType.startsWith('removed')) return 'Removed';
-        return 'Changed';
+        return 'Changed'; // Default for changedValue, changedSecurity etc.
      }
     function renderChangeEntryHtml(change) { 
         let html = `<div class="DiffChangeItem DiffType ${getDiffClass(change.type)}">`;
@@ -442,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
             html += `<span class="TagChange RemovedTag">- ${renderTagsHtml([change.tag])}</span>`;
         } else if (change.from !== undefined || change.to !== undefined) {
             let fromHtml = "<i>N/A</i>", toHtml = "<i>N/A</i>";
-            const prop = change.property;
+            const prop = change.property; // This is the key for what changed e.g. "Superclass", "ValueType" etc
             if (prop === "ValueType" || prop === "ReturnType" || (change.type === 'changedLuaType' && prop)) {
                 if(change.from) fromHtml = renderLuaTypeHtml(change.from); if(change.to) toHtml = renderLuaTypeHtml(change.to);
             } else if (prop === "Security" || change.type === 'changedSecurity') {
@@ -457,22 +516,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 toHtml = String(change.to !== undefined ? change.to : "<i>N/A</i>");
             }
             html += `<span class="DiffFrom">From: ${fromHtml}</span> ${renderHtmlSymbol("=>")} <span class="DiffTo">To: ${toHtml}</span>`;
-        } else { html += JSON.stringify(change); }
+        } else { html += JSON.stringify(change); } // Fallback
         html += `</div>`;
         return html;
     }
     function generateDiffHtml(diffResult, oldApiData, newApiData) { 
         let html = "";
-        if (!diffResult) return "<p>No diff data to display.</p>";
-        const { classes: classDiffs, enums: enumDiffs } = diffResult;
+        if (!diffResult) return "<p>No diff data to display.</p>"; // Should not happen if generateDiff is robust
+        const { classes: classDiffs, enums: enumDiffs } = diffResult; // Destructure for easier access
     
         html += "<h2>Class Differences</h2>";
-        if (!classDiffs || (classDiffs.added.length === 0 && classDiffs.removed.length === 0 && classDiffs.changed.length === 0)) {
+        if (!classDiffs || ((classDiffs.added?.length || 0) === 0 && (classDiffs.removed?.length || 0) === 0 && (classDiffs.changed?.length || 0) === 0)) {
             html += "<p>No class differences.</p>";
         } else {
-            (classDiffs.added || []).forEach(cls => { /* ... */ html += `<div class="DiffEntry DiffType Added"><h3>Added Class: ${cls.Name}</h3>${generateApiHtml({ Classes: [cls] })}</div>`; });
-            (classDiffs.removed || []).forEach(cls => { /* ... */ html += `<div class="DiffEntry DiffType Removed"><h3>Removed Class: ${cls.Name}</h3>${generateApiHtml({ Classes: [cls] })}</div>`; });
-            (classDiffs.changed || []).forEach(cc => {
+            (classDiffs.added || []).forEach(cls => { html += `<div class="DiffEntry DiffType Added"><h3>Added Class: ${cls.Name}</h3>${generateApiHtml({ Classes: [cls] })}</div>`; });
+            (classDiffs.removed || []).forEach(cls => { html += `<div class="DiffEntry DiffType Removed"><h3>Removed Class: ${cls.Name}</h3>${generateApiHtml({ Classes: [cls] })}</div>`; });
+            (classDiffs.changed || []).forEach(cc => { // cc for classChange
                 html += `<div class="DiffEntry DiffType Changed"><h3>Changed Class: ${cc.name}</h3>`;
                 if (cc.changes && cc.changes.length > 0) { html += `<div class="ClassChanges"><h4>Class-Level Changes:</h4>${cc.changes.map(renderChangeEntryHtml).join('')}</div>`; }
                 if (cc.memberDiff) {
@@ -484,20 +543,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         (md.changed || []).forEach(mc => {
                             html += `<div class="DiffType Changed"><h5>Changed Member: ${mc.name} (${mc.memberType})</h5>${renderMemberHtml(mc.newMember, cc.name)}${mc.changes.map(renderChangeEntryHtml).join('')}</div>`;
                         });
-                        html += `</div>`;
+                        html += `</div>`; // Close MemberChanges
                     }
                 }
-                html += `</div>`;
+                html += `</div>`; // Close DiffEntry Changed Class
             });
         }
     
         html += "<h2>Enum Differences</h2>";
-        if (!enumDiffs || (enumDiffs.added.length === 0 && enumDiffs.removed.length === 0 && enumDiffs.changed.length === 0)) {
+        if (!enumDiffs || ((enumDiffs.added?.length || 0) === 0 && (enumDiffs.removed?.length || 0) === 0 && (enumDiffs.changed?.length || 0) === 0)) {
             html += "<p>No enum differences.</p>";
         } else {
-            (enumDiffs.added || []).forEach(enm => { /* ... */ html += `<div class="DiffEntry DiffType Added"><h3>Added Enum: ${enm.Name}</h3>${generateApiHtml({ Enums: [enm] })}</div>`; });
-            (enumDiffs.removed || []).forEach(enm => { /* ... */ html += `<div class="DiffEntry DiffType Removed"><h3>Removed Enum: ${enm.Name}</h3>${generateApiHtml({ Enums: [enm] })}</div>`; });
-            (enumDiffs.changed || []).forEach(ec => {
+            (enumDiffs.added || []).forEach(enm => { html += `<div class="DiffEntry DiffType Added"><h3>Added Enum: ${enm.Name}</h3>${generateApiHtml({ Enums: [enm] })}</div>`; });
+            (enumDiffs.removed || []).forEach(enm => { html += `<div class="DiffEntry DiffType Removed"><h3>Removed Enum: ${enm.Name}</h3>${generateApiHtml({ Enums: [enm] })}</div>`; });
+            (enumDiffs.changed || []).forEach(ec => { // ec for enumChange
                 html += `<div class="DiffEntry DiffType Changed"><h3>Changed Enum: ${ec.name}</h3>`;
                 if (ec.changes && ec.changes.length > 0) { html += `<div class="EnumChanges"><h4>Enum-Level Changes:</h4>${ec.changes.map(renderChangeEntryHtml).join('')}</div>`; }
                 if (ec.itemDiff) {
@@ -509,15 +568,74 @@ document.addEventListener('DOMContentLoaded', () => {
                         (id.changed || []).forEach(ic => {
                             html += `<div class="DiffType Changed"><h5>Changed Item: ${ic.name}</h5><div class="EnumItem">${ec.name}.${ic.newItem.Name} : ${ic.newItem.Value} ${renderTagsHtml(ic.newItem.Tags)}</div>${ic.changes.map(renderChangeEntryHtml).join('')}</div>`;
                         });
-                        html += `</div>`;
+                        html += `</div>`; // Close EnumItemChanges
                     }
                 }
-                html += `</div>`;
+                html += `</div>`; // Close DiffEntry Changed Enum
             });
         }
         return html;
     }
-    function generateDiffTxt(diffResult, oldApiData, newApiData) { /* ... (full implementation from previous steps) ... */ return "Diff TXT (see console for structure)"; }
+    function generateDiffTxt(diffResult, oldApiData, newApiData) { 
+        let txt = "";
+        if (!diffResult) return "No diff data to display.";
+        const { classes: classDiffs, enums: enumDiffs } = diffResult;
+
+        function changeEntryTxt(change, indent = "    ") {
+            let detail = `${indent}* ${change.property || (change.type.includes("Tag") ? "Tag" : change.type.replace(/^(changed|added|removed)/, ""))}: `;
+            if (change.type === 'addedTag') detail += `+ [${change.tag}]`;
+            else if (change.type === 'removedTag') detail += `- [${change.tag}]`;
+            else if (change.from !== undefined || change.to !== undefined) {
+                const fromStr = String(change.from !== undefined ? change.from : "N/A");
+                const toStr = String(change.to !== undefined ? change.to : "N/A");
+                detail += `From: '${fromStr}' To: '${toStr}'`;
+            } else detail += JSON.stringify(change);
+            return detail;
+        }
+    
+        txt += "Class Differences:\n";
+        if (!classDiffs || ((classDiffs.added?.length || 0) === 0 && (classDiffs.removed?.length || 0) === 0 && (classDiffs.changed?.length || 0) === 0)) {
+            txt += "  No class differences.\n";
+        } else {
+            (classDiffs.added || []).forEach(cls => txt += `+ Added Class: ${cls.Name}\n`);
+            (classDiffs.removed || []).forEach(cls => txt += `- Removed Class: ${cls.Name}\n`);
+            (classDiffs.changed || []).forEach(cc => {
+                txt += `~ Changed Class: ${cc.name}\n`;
+                (cc.changes || []).forEach(change => txt += `${changeEntryTxt(change, "  ")}\n`);
+                if (cc.memberDiff) {
+                    const md = cc.memberDiff;
+                    (md.added || []).forEach(m => txt += `  + Added Member: ${m.Name} (${m.MemberType})\n`);
+                    (md.removed || []).forEach(m => txt += `  - Removed Member: ${m.Name} (${m.MemberType})\n`);
+                    (md.changed || []).forEach(mc => {
+                        txt += `  ~ Changed Member: ${mc.name} (${mc.memberType})\n`;
+                        (mc.changes || []).forEach(change => txt += `${changeEntryTxt(change, "    ")}\n`);
+                    });
+                }
+            });
+        }
+    
+        txt += "\nEnum Differences:\n";
+        if (!enumDiffs || ((enumDiffs.added?.length || 0) === 0 && (enumDiffs.removed?.length || 0) === 0 && (enumDiffs.changed?.length || 0) === 0)) {
+             txt += "  No enum differences.\n";
+        } else {
+            (enumDiffs.added || []).forEach(enm => txt += `+ Added Enum: ${enm.Name}\n`);
+            (enumDiffs.removed || []).forEach(enm => txt += `- Removed Enum: ${enm.Name}\n`);
+            (enumDiffs.changed || []).forEach(ec => {
+                txt += `~ Changed Enum: ${ec.name}\n`;
+                (ec.changes || []).forEach(change => txt += `${changeEntryTxt(change, "  ")}\n`);
+                if (ec.itemDiff) {
+                    const id = ec.itemDiff;
+                    (id.added || []).forEach(item => txt += `  + Added Item: ${item.Name}\n`);
+                    (id.removed || []).forEach(item => txt += `  - Removed Item: ${item.Name}\n`);
+                    (id.changed || []).forEach(ic => {
+                        txt += `  ~ Changed Item: ${ic.name}\n`;
+                        (ic.changes || []).forEach(change => txt += `${changeEntryTxt(change, "    ")}\n`);
+                    });
+                }
+            });
+        }
+        return txt.trim();
+    }
 
     // --- Event Listeners ---
     if (viewApiDumpButton) viewApiDumpButton.addEventListener('click', async () => {
@@ -546,13 +664,12 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleLoading(true);
 
         const newApiData = await fetchApiDump(versionAGuid, isFullDump, "Version A (Newer)");
-        if (!newApiData) { toggleLoading(false); return; }
+        if (!newApiData) { toggleLoading(false); setStatus("Failed to fetch new API data.", true); return; } // Added status
         const oldApiData = await fetchApiDump(versionBGuid, isFullDump, "Version B (Older)");
-        if (!oldApiData) { toggleLoading(false); return; }
+        if (!oldApiData) { toggleLoading(false); setStatus("Failed to fetch old API data.", true); return; } // Added status
 
         const diffResult = generateDiff(oldApiData, newApiData);
-        setStatus("Diff generated. Displaying results.");
-        console.log("Generated Diff Object:", JSON.parse(JSON.stringify(diffResult))); // Log a clone
+        console.log("Generated Diff Object:", JSON.parse(JSON.stringify(diffResult))); 
         
         let diffContent = "";
         if (selectedFormat === "HTML") {
@@ -567,9 +684,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!diffContent && (selectedFormat === "HTML" || selectedFormat === "TXT")) {
-             setStatus("Diff content generation seems to have resulted in empty output for HTML/TXT. Check console.", true);
-        } else if (selectedFormat === "JSON" && (!diffResult || Object.keys(diffResult.classes).every(key => diffResult.classes[key].length ===0) && Object.keys(diffResult.enums).every(key => diffResult.enums[key].length ===0) )) {
-             setStatus("Diff object is effectively empty (no differences found or error in diff generation).", false);
+             setStatus("Diff content generation resulted in empty output. Check console.", true);
+        } else if (selectedFormat === "JSON" && (!diffResult || Object.keys(diffResult.classes).every(key => (diffResult.classes[key]?.length || 0) === 0) && Object.keys(diffResult.enums).every(key => (diffResult.enums[key]?.length || 0) === 0) )) {
+             setStatus("No differences found.", false); // More user-friendly message
+        } else {
+            setStatus("Diff generated. Displaying results.");
         }
         
         displayData(diffContent, selectedFormat, true); 
@@ -579,7 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (apiDumpFormatDropdown) apiDumpFormatDropdown.addEventListener('change', (event) => {
         const selectedFormat = event.target.value;
         if (event.isTrusted) { 
-            displayData("Select an action to view data.", selectedFormat);
+            displayData("Select an action to view data.", selectedFormat); // Clear display
             setStatus(`Format changed to ${selectedFormat}. Select an action.`);
         }
         if (downloadPngButton) downloadPngButton.disabled = selectedFormat !== "HTML";
