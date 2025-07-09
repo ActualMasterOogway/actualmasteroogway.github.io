@@ -1090,9 +1090,46 @@ document.addEventListener('DOMContentLoaded', () => {
         setStatus("Rendering HTML to PNG...");
         toggleLoading(true, "Rendering PNG...");
         try {
-            const canvas = await html2canvas(htmlOutputDisplay, { scale: 1.5, backgroundColor: '#151515', logging: true });
+            // Determine the element to render (could be main output or a diff view)
+            // For simplicity, we always target htmlOutputDisplay which contains either single view or diff view.
+            const elementToRender = htmlOutputDisplay;
+
+            // Get current scroll dimensions to set canvas size explicitly
+            // This helps if content overflows the container's set max-height/width
+            const originalScrollTop = elementToRender.scrollTop;
+            const originalScrollLeft = elementToRender.scrollLeft;
+
+            // Temporarily scroll to top-left to ensure consistent capture start for some browsers/html2canvas versions
+            elementToRender.scrollTop = 0;
+            elementToRender.scrollLeft = 0;
+
+            const canvas = await html2canvas(elementToRender, {
+                scale: 1.5, // User preference, adjust as needed
+                backgroundColor: '#151515', // Match the div's background
+                logging: true,
+                width: elementToRender.scrollWidth,   // Capture full width
+                height: elementToRender.scrollHeight, // Capture full height
+                windowWidth: elementToRender.scrollWidth, // Ensure window context matches content
+                windowHeight: elementToRender.scrollHeight,
+                onclone: (documentClone) => {
+                    const clonedElement = documentClone.getElementById(elementToRender.id);
+                    if (clonedElement) {
+                        // Apply styles to ensure full content is visible in the clone
+                        clonedElement.style.maxHeight = 'none';
+                        clonedElement.style.overflow = 'visible'; // Show all overflow
+                        // If it has fixed width/height that causes internal scroll, those might also need adjustment
+                        // For example, if children of clonedElement cause scroll an not clonedElement itself
+                        // This might require more specific selectors if the structure is complex.
+                    }
+                }
+            });
+
+            // Restore original scroll position on the live element
+            elementToRender.scrollTop = originalScrollTop;
+            elementToRender.scrollLeft = originalScrollLeft;
+
             const dataUrl = canvas.toDataURL('image/png');
-            const link = Object.assign(document.createElement('a'), { href: dataUrl, download: 'api-dump-diff.png' });
+            const link = Object.assign(document.createElement('a'), { href: dataUrl, download: 'api-dump.png' }); // Simpler name
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
