@@ -55,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateVersionDropdowns() {
         [versionADropdown, versionBDropdown].forEach((dropdown, idx) => {
             if (!dropdown) return;
-            const currentValue = dropdown.value; // Preserve selection if possible
-            dropdown.innerHTML = ""; // Clear existing
+            const currentValue = dropdown.value;
+            dropdown.innerHTML = "";
             availableStudioVersions.forEach(version => {
                 const option = new Option(version, version);
                 dropdown.add(option);
@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (availableStudioVersions.includes(currentValue)) {
                 dropdown.value = currentValue;
             } else if (availableStudioVersions.length > 0) {
-                // Set default selections: A to newest, B to second newest (or newest if only one)
                 dropdown.value = availableStudioVersions[idx === 0 ? 0 : (availableStudioVersions.length > 1 ? 1 : 0)];
             }
         });
@@ -109,10 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- HTML/TXT Generation (Single API Dump) ---
-    // Note: These render functions are simplified here for brevity. 
-    // The full implementations from prior steps should be used.
     function renderHtmlSymbol(symbol) { return `<span class="symbol">${symbol}</span>`; }
-    function renderTagsHtml(tagsArray = []) { return tagsArray.map(tag => `<span class="Tag">[${tag}]</span>`).join(" "); }
+    function renderTagsHtml(tagsArray = []) { return (tagsArray || []).map(tag => `<span class="Tag">[${tag}]</span>`).join(" "); }
     function renderSecurityHtml(securityObj) { 
         if (!securityObj) return "";
         if (typeof securityObj === 'string' && securityObj !== "None") return `<span class="Security">{${securityObj}}</span>`;
@@ -132,23 +129,61 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!luaTypeObj || !luaTypeObj.Name) return `<span class="Type">any</span>`;
         let name = luaTypeObj.Name;
         const category = luaTypeObj.Category;
+        const subTypes = luaTypeObj.SubTypes || [];
+        let html = "";
         const isOptional = name.endsWith('?');
         const absoluteName = name.replace("?", "");
-        const luauTypeMappings = { /* ... as before ... */ };
+        const luauTypeMappings = {
+            "Dictionary": "{ [string]: any }", "Map": "{ [string]: any }", "Array": "{ any }",
+            "Objects": "{ Instance }", "Function": "((...any) -> ...any)",
+            "OptionalCoordinateFrame": "CFrame", "CoordinateFrame": "CFrame",
+            "Content": "string", "ProtectedString": "string", "null": "()", "void": "()",
+            "int": "number", "int64": "number", "float": "number", "double": "number",
+            "bool": "boolean", "Variant": "any"
+        };
         let effectiveName = luauTypeMappings[absoluteName] || absoluteName;
-        // ... (rest of LuaType rendering logic as before) ...
-        return `<span class="Type">${effectiveName}</span>` + (isOptional ? renderHtmlSymbol("?") : "");
+        if (category === "Enum") {
+            html += `<span class="Type">Enum</span>${renderHtmlSymbol(".")}<span class="Type">${name.replace("?", "")}</span>`;
+        } else if (absoluteName === "Tuple") {
+            html += renderHtmlSymbol("(");
+            if (subTypes.length > 0) {
+                html += subTypes.map(st => renderLuaTypeHtml(st)).join(renderHtmlSymbol(", "));
+            } else {
+                html += `${renderHtmlSymbol("...")}<span class="Type">any</span>`;
+            }
+            html += renderHtmlSymbol(")");
+        } else if (absoluteName === "Array") {
+             html += `${renderHtmlSymbol("{")} <span class="Type">any</span> ${renderHtmlSymbol("}")}`;
+        } else if (absoluteName === "Dictionary" || absoluteName === "Map") {
+             html += `${renderHtmlSymbol("{ [")}<span class="Type">string</span>${renderHtmlSymbol("]: ")}<span class="Type">any</span> ${renderHtmlSymbol("}")}`;
+        } else if (absoluteName === "Objects") {
+             html += `${renderHtmlSymbol("{ ")}<span class="Type">Instance</span>${renderHtmlSymbol(" }")}`;
+        } else if (absoluteName === "Function") {
+            if(isOptional && !effectiveName.startsWith('(')) html += renderHtmlSymbol("("); // Wrap optional functions
+            html += `<span class="Type">${effectiveName}</span>`; // Use mapped name directly
+            if(isOptional && !effectiveName.startsWith('(')) html += renderHtmlSymbol(")");
+        } else if (absoluteName === "null" || absoluteName === "void") {
+            html += renderHtmlSymbol("()");
+        } else {
+             html += `<span class="Type">${effectiveName}</span>`;
+        }
+        
+        if (isOptional && !html.endsWith("?") && !html.endsWith(")?")) {
+             html += renderHtmlSymbol("?");
+        }
+        return html;
     }
     function renderParametersHtml(paramsArray = []) { 
         let html = renderHtmlSymbol("(");
-        if (paramsArray.length > 0) {
+        if (paramsArray && paramsArray.length > 0) {
             html += paramsArray.map(p => {
                 let typeCopy = JSON.parse(JSON.stringify(p.Type)); 
                 if (p.Default !== undefined && p.Default !== null && !typeCopy.Name.endsWith("?")) typeCopy.Name += "?"; 
                 let paramHtml = `<span class="ParamName">${p.Name}</span>${renderHtmlSymbol(": ")}${renderLuaTypeHtml(typeCopy)}`;
                 if (p.Default !== undefined && p.Default !== null) { 
                     let defaultVal = p.Default;
-                    if (( (typeCopy.AbsoluteName || typeCopy.Name) === "string" || typeCopy.Category === "Enum") && !(String(defaultVal).startsWith('"') && String(defaultVal).endsWith('"'))) {
+                    const typeAbsoluteName = (typeCopy.AbsoluteName || typeCopy.Name || "").replace("?", "");
+                    if ((typeAbsoluteName === "string" || typeCopy.Category === "Enum") && !(String(defaultVal).startsWith('"') && String(defaultVal).endsWith('"'))) {
                         defaultVal = `"${defaultVal}"`;
                     }
                     paramHtml += `${renderHtmlSymbol(" = ")}<span class="ParamDefault ${typeof defaultVal === 'number' ? 'Value' : 'String'}">${defaultVal}</span>`;
@@ -206,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
             html += ` ${renderSecurityHtml(classDesc.Security)}`; 
             html += ` ${renderTagsHtml(classDesc.Tags)}`;
             html += `</div>`;
-            (classDesc.Members || []).sort((a,b) => (a.MemberType||"").localeCompare(b.MemberType||"") || a.Name.localeCompare(b.Name))
+            (classDesc.Members || []).sort((a,b) => ((a.MemberType||"Z").localeCompare(b.MemberType||"Z")) || a.Name.localeCompare(b.Name))
                              .forEach(member => html += renderMemberHtml(member, classDesc.Name));
         });
         (apiData.Enums || []).sort((a,b) => a.Name.localeCompare(b.Name)).forEach(enumDesc => {
@@ -229,10 +264,32 @@ document.addEventListener('DOMContentLoaded', () => {
     function generateApiTxt(apiData) { 
         if (!apiData) return "No API data to display.";
         let txt = "";
-        // ... (Simplified TXT generation as before) ...
-        (apiData.Classes || []).forEach(c => txt += `Class ${c.Name}\n`);
-        (apiData.Enums || []).forEach(e => txt += `Enum ${e.Name}\n`);
-        return txt || "No classes or enums found.";
+        const formatTags = (tags = []) => tags.map(t => `[${t}]`).join(" ");
+        const formatSecurity = (sec) => { /* ... simplified ... */ return sec ? JSON.stringify(sec) : ""; };
+        const formatLuaType = (lt) => lt ? lt.Name : "any";
+        const formatParams = (params = []) => `(${params.map(p => `${p.Name}: ${formatLuaType(p.Type)}`).join(", ")})`;
+
+        (apiData.Classes || []).sort((a,b)=>a.Name.localeCompare(b.Name)).forEach(c => {
+            txt += `Class ${c.Name}${c.Superclass !== "<<<ROOT>>>" ? ` : ${c.Superclass}` : ""} ${formatSecurity(c.Security)} ${formatTags(c.Tags)}\n`;
+            (c.Members || []).sort((a,b)=>a.Name.localeCompare(b.Name)).forEach(m => {
+                txt += `\t${m.MemberType} ${c.Name}${m.MemberType === 'Function' ? ':' : '.'}${m.Name}`;
+                if (m.MemberType === "Property") txt += `: ${formatLuaType(m.ValueType)}`;
+                else if (m.MemberType === "Function" || m.MemberType === "Event") {
+                    txt += formatParams(m.Parameters);
+                    if (m.ReturnType) txt += ` -> ${formatLuaType(m.ReturnType)}`;
+                }
+                txt += ` ${formatSecurity(m.Security)} ${formatTags(m.Tags)}\n`;
+            });
+            txt += "\n";
+        });
+        (apiData.Enums || []).sort((a,b)=>a.Name.localeCompare(b.Name)).forEach(e => {
+            txt += `Enum ${e.Name} ${formatTags(e.Tags)}\n`;
+            (e.Items || []).sort((a,b)=>a.Value - b.Value).forEach(i => {
+                txt += `\tEnumItem ${e.Name}.${i.Name} : ${i.Value} ${formatTags(i.Tags)}\n`;
+            });
+            txt += "\n";
+        });
+        return txt.trim() || "No classes or enums found.";
     }
 
     // --- Display Logic (Single API or Diff) ---
@@ -258,9 +315,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } return false;
     }
     function compareTags(oldTags = [], newTags = [], changeList, context = null) {
-        const oldSet = new Set(oldTags); const newSet = new Set(newTags); let changed = false;
-        oldTags.forEach(t => { if (!newSet.has(t)) { changeList.push({ type: 'removedTag', tag: t, context }); changed = true; }});
-        newTags.forEach(t => { if (!oldSet.has(t)) { changeList.push({ type: 'addedTag', tag: t, context }); changed = true; }});
+        const oldSet = new Set(oldTags || []); const newSet = new Set(newTags || []); let changed = false;
+        (oldTags || []).forEach(t => { if (!newSet.has(t)) { changeList.push({ type: 'removedTag', tag: t, context }); changed = true; }});
+        (newTags || []).forEach(t => { if (!oldSet.has(t)) { changeList.push({ type: 'addedTag', tag: t, context }); changed = true; }});
         return changed;
     }
     function compareSecurity(oldSec, newSec, changeList, context = null) {
@@ -268,15 +325,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (oldStr !== newStr) { changeList.push({ type: 'changedSecurity', from: oldSec, to: newSec, context }); return true; }
         return false;
     }
-    function compareLuaType(oldType, newType, changeList, context = null) {
+    function compareLuaType(oldType, newType, changeList, context = null) { // `context` here is the property name like 'ValueType'
         const oldStr = JSON.stringify(oldType || null); const newStr = JSON.stringify(newType || null);
         if (oldStr !== newStr) { changeList.push({ type: 'changedLuaType', property: context, from: oldType, to: newType }); return true; }
         return false;
     }
-    function compareParameters(oldP = [], newP = [], changeList, context = null) { // Simplified
-        const oldStr = JSON.stringify(oldP.map(p=>({N:p.Name, T:p.Type.Name, D:p.Default}))); 
-        const newStr = JSON.stringify(newP.map(p=>({N:p.Name, T:p.Type.Name, D:p.Default})));
-        if (oldStr !== newStr) { changeList.push({ type: 'changedParametersDetail', from: oldP, to: newP, context }); return true; }
+    function compareParameters(oldP = [], newP = [], changeList, context = null) {
+        const oldParams = oldP || []; const newParams = newP || [];
+        const oldStr = JSON.stringify(oldParams.map(p=>({N:p.Name, T:p.Type?.Name, D:p.Default}))); 
+        const newStr = JSON.stringify(newParams.map(p=>({N:p.Name, T:p.Type?.Name, D:p.Default})));
+        if (oldStr !== newStr) { changeList.push({ type: 'changedParametersDetail', from: oldParams, to: newParams, context }); return true; }
         return false;
     }
     function compareSerialization(oldS, newS, changeList, context = null) {
@@ -289,19 +347,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const diff = { added: [], removed: [], changed: [] };
         mapNew.forEach((newM, name) => {
             const oldM = mapOld.get(name);
-            if (!oldM) diff.added.push(newM);
-            else if (oldM.MemberType !== newM.MemberType) { // Type change = remove old, add new
-                diff.removed.push(oldM); diff.added.push(newM);
-            } else {
-                const changes = [];
-                compareTags(oldM.Tags, newM.Tags, changes, "Tags");
-                compareSecurity(oldM.Security, newM.Security, changes, "Security");
-                compareSimpleValue(oldM.ThreadSafety, newM.ThreadSafety, changes, "ThreadSafety");
-                if (newM.MemberType === "Property") { /* compare ValueType, Serialization, Category */ }
-                else if (newM.MemberType === "Function" || newM.MemberType === "Callback") { /* compare ReturnType, Parameters */ }
-                else if (newM.MemberType === "Event") { /* compare Parameters */ }
-                if (changes.length > 0) diff.changed.push({ name, memberType: newM.MemberType, oldMember: oldM, newMember: newM, changes });
+            if (!oldM) {diff.added.push(newM); return;}
+            
+            if (oldM.MemberType !== newM.MemberType) { 
+                diff.removed.push(oldM); diff.added.push(newM); return;
             }
+            const changes = [];
+            compareTags(oldM.Tags, newM.Tags, changes, "Tags");
+            compareSecurity(oldM.Security, newM.Security, changes, "Security");
+            compareSimpleValue(oldM.ThreadSafety, newM.ThreadSafety, changes, "ThreadSafety");
+
+            if (newM.MemberType === "Property") {
+                compareLuaType(oldM.ValueType, newM.ValueType, changes, "ValueType");
+                compareSerialization(oldM.Serialization, newM.Serialization, changes, "Serialization");
+                compareSimpleValue(oldM.Category, newM.Category, changes, "Category");
+            } else if (newM.MemberType === "Function" || newM.MemberType === "Callback") {
+                compareLuaType(oldM.ReturnType, newM.ReturnType, changes, "ReturnType");
+                compareParameters(oldM.Parameters, newM.Parameters, changes, "Parameters");
+            } else if (newM.MemberType === "Event") {
+                compareParameters(oldM.Parameters, newM.Parameters, changes, "Parameters");
+            }
+            if (changes.length > 0) diff.changed.push({ name, memberType: newM.MemberType, oldMember: oldM, newMember: newM, changes });
         });
         mapOld.forEach((oldM, name) => { if (!mapNew.has(name)) diff.removed.push(oldM); });
         return diff;
@@ -311,48 +377,147 @@ document.addEventListener('DOMContentLoaded', () => {
         const diff = { added: [], removed: [], changed: [] };
         mapNew.forEach((newI, name) => {
             const oldI = mapOld.get(name);
-            if (!oldI) diff.added.push(newI);
-            else {
-                const changes = [];
-                compareSimpleValue(oldI.Value, newI.Value, changes, "Value");
-                compareTags(oldI.Tags, newI.Tags, changes, "Tags");
-                if (changes.length > 0) diff.changed.push({ name, oldItem: oldI, newItem: newI, changes });
-            }
+            if (!oldI) {diff.added.push(newI); return;}
+            const changes = [];
+            compareSimpleValue(oldI.Value, newI.Value, changes, "Value");
+            compareTags(oldI.Tags, newI.Tags, changes, "Tags");
+            if (changes.length > 0) diff.changed.push({ name, oldItem: oldI, newItem: newI, changes });
         });
         mapOld.forEach((oldI, name) => { if (!mapNew.has(name)) diff.removed.push(oldI); });
         return diff;
     }
     function generateDiff(oldApiData, newApiData) {
-        const diffResult = { classes: { added: [], removed: [], changed: [] }, enums: { added: [], removed: [], changed: [] } };
-        if (!oldApiData || !newApiData) return diffResult;
+        const diffResult = { 
+            classes: { added: [], removed: [], changed: [] }, 
+            enums: { added: [], removed: [], changed: [] } 
+        };
+        oldApiData = oldApiData || { Classes: [], Enums: [] };
+        newApiData = newApiData || { Classes: [], Enums: [] };
+        oldApiData.Classes = oldApiData.Classes || []; oldApiData.Enums = oldApiData.Enums || [];
+        newApiData.Classes = newApiData.Classes || []; newApiData.Enums = newApiData.Enums || [];
+
         const oldCMap = mapByName(oldApiData.Classes); const newCMap = mapByName(newApiData.Classes);
         newCMap.forEach((newC, name) => {
             const oldC = oldCMap.get(name);
-            if (!oldC) diffResult.classes.added.push(newC);
-            else {
-                const changes = [];
-                compareSimpleValue(oldC.Superclass, newC.Superclass, changes, "Superclass");
-                compareTags(oldC.Tags, newC.Tags, changes, "Class.Tags");
-                compareSecurity(oldC.Security, newC.Security, changes, "Class.Security");
-                const memberDiff = diffMembers(oldC.Members, newC.Members, name);
-                if (changes.length > 0 || memberDiff.added.length || memberDiff.removed.length || memberDiff.changed.length) {
-                    diffResult.classes.changed.push({ name, oldClass: oldC, newClass: newC, changes, memberDiff });
-                }
+            if (!oldC) { diffResult.classes.added.push(newC); return; }
+            const changes = [];
+            compareSimpleValue(oldC.Superclass, newC.Superclass, changes, "Superclass");
+            compareTags(oldC.Tags, newC.Tags, changes, "Class Tags"); // Clarified context
+            compareSecurity(oldC.Security, newC.Security, changes, "Class Security"); // Clarified context
+            const memberDiff = diffMembers(oldC.Members, newC.Members, name);
+            if (changes.length > 0 || memberDiff.added.length || memberDiff.removed.length || memberDiff.changed.length) {
+                diffResult.classes.changed.push({ name, oldClass: oldC, newClass: newC, changes, memberDiff });
             }
         });
         oldCMap.forEach((oldC, name) => { if (!newCMap.has(name)) diffResult.classes.removed.push(oldC); });
-        // ... similar logic for enums ...
+        
         const oldEMap = mapByName(oldApiData.Enums); const newEMap = mapByName(newApiData.Enums);
-        newEMap.forEach((newE, name) => { /* ... */ });
+        newEMap.forEach((newE, name) => {
+            const oldE = oldEMap.get(name);
+            if (!oldE) { diffResult.enums.added.push(newE); return; }
+            const changes = [];
+            compareTags(oldE.Tags, newE.Tags, changes, "Enum Tags"); // Clarified context
+            const itemDiff = diffEnumItems(oldE.Items, newE.Items, name);
+            if (changes.length > 0 || itemDiff.added.length || itemDiff.removed.length || itemDiff.changed.length) {
+                diffResult.enums.changed.push({ name, oldEnum: oldE, newEnum: newE, changes, itemDiff });
+            }
+        });
         oldEMap.forEach((oldE, name) => { if (!newEMap.has(name)) diffResult.enums.removed.push(oldE); });
         return diffResult;
     }
 
     // --- Diff Rendering Logic ---
-    function getDiffClass(changeType = "") { /* ... as before ... */ return 'Changed'; }
-    function renderChangeEntryHtml(change) { /* ... as before, ensure robustness ... */ return `<div>${JSON.stringify(change)}</div>`; }
-    function generateDiffHtml(diffResult, oldApiData, newApiData) { /* ... as before, ensure robustness ... */ return "<p>Diff HTML (see console for structure)</p>"; }
-    function generateDiffTxt(diffResult, oldApiData, newApiData) { /* ... as before, ensure robustness ... */ return "Diff TXT (see console for structure)"; }
+    function getDiffClass(changeType = "") { 
+        if (changeType.startsWith('added')) return 'Added';
+        if (changeType.startsWith('removed')) return 'Removed';
+        return 'Changed';
+     }
+    function renderChangeEntryHtml(change) { 
+        let html = `<div class="DiffChangeItem DiffType ${getDiffClass(change.type)}">`;
+        const propertyNameText = change.property || (change.type.includes("Tag") ? "Tag" : change.type.replace(/^(changed|added|removed)/, ""));
+        html += `<span class="DiffProperty">${propertyNameText.charAt(0).toUpperCase() + propertyNameText.slice(1)}:</span> `;
+        if (change.type === 'addedTag') {
+            html += `<span class="TagChange AddedTag">+ ${renderTagsHtml([change.tag])}</span>`;
+        } else if (change.type === 'removedTag') {
+            html += `<span class="TagChange RemovedTag">- ${renderTagsHtml([change.tag])}</span>`;
+        } else if (change.from !== undefined || change.to !== undefined) {
+            let fromHtml = "<i>N/A</i>", toHtml = "<i>N/A</i>";
+            const prop = change.property;
+            if (prop === "ValueType" || prop === "ReturnType" || (change.type === 'changedLuaType' && prop)) {
+                if(change.from) fromHtml = renderLuaTypeHtml(change.from); if(change.to) toHtml = renderLuaTypeHtml(change.to);
+            } else if (prop === "Security" || change.type === 'changedSecurity') {
+                if(change.from) fromHtml = renderSecurityHtml(change.from); if(change.to) toHtml = renderSecurityHtml(change.to);
+            } else if (prop === "Serialization" || change.type === 'changedSerialization') {
+                if(change.from) fromHtml = renderSerializationHtml(change.from); if(change.to) toHtml = renderSerializationHtml(change.to);
+            } else if (prop === "Parameters" || change.type === 'changedParametersDetail' || change.type === 'changedParametersCount') {
+                if (change.type === 'changedParametersCount') { fromHtml = `Count: ${change.from}`; toHtml = `Count: ${change.to}`; }
+                else { if(change.from) fromHtml = renderParametersHtml(change.from); if(change.to) toHtml = renderParametersHtml(change.to); }
+            } else { 
+                fromHtml = String(change.from !== undefined ? change.from : "<i>N/A</i>");
+                toHtml = String(change.to !== undefined ? change.to : "<i>N/A</i>");
+            }
+            html += `<span class="DiffFrom">From: ${fromHtml}</span> ${renderHtmlSymbol("=>")} <span class="DiffTo">To: ${toHtml}</span>`;
+        } else { html += JSON.stringify(change); }
+        html += `</div>`;
+        return html;
+    }
+    function generateDiffHtml(diffResult, oldApiData, newApiData) { 
+        let html = "";
+        if (!diffResult) return "<p>No diff data to display.</p>";
+        const { classes: classDiffs, enums: enumDiffs } = diffResult;
+    
+        html += "<h2>Class Differences</h2>";
+        if (!classDiffs || (classDiffs.added.length === 0 && classDiffs.removed.length === 0 && classDiffs.changed.length === 0)) {
+            html += "<p>No class differences.</p>";
+        } else {
+            (classDiffs.added || []).forEach(cls => { /* ... */ html += `<div class="DiffEntry DiffType Added"><h3>Added Class: ${cls.Name}</h3>${generateApiHtml({ Classes: [cls] })}</div>`; });
+            (classDiffs.removed || []).forEach(cls => { /* ... */ html += `<div class="DiffEntry DiffType Removed"><h3>Removed Class: ${cls.Name}</h3>${generateApiHtml({ Classes: [cls] })}</div>`; });
+            (classDiffs.changed || []).forEach(cc => {
+                html += `<div class="DiffEntry DiffType Changed"><h3>Changed Class: ${cc.name}</h3>`;
+                if (cc.changes && cc.changes.length > 0) { html += `<div class="ClassChanges"><h4>Class-Level Changes:</h4>${cc.changes.map(renderChangeEntryHtml).join('')}</div>`; }
+                if (cc.memberDiff) {
+                    const md = cc.memberDiff;
+                    if ((md.added?.length || 0) > 0 || (md.removed?.length || 0) > 0 || (md.changed?.length || 0) > 0) {
+                        html += `<div class="MemberChanges"><h4>Member Changes:</h4>`;
+                        (md.added || []).forEach(m => html += `<div class="DiffType Added"><h5>Added Member: ${m.Name} (${m.MemberType})</h5>${renderMemberHtml(m, cc.name)}</div>`);
+                        (md.removed || []).forEach(m => html += `<div class="DiffType Removed"><h5>Removed Member: ${m.Name} (${m.MemberType})</h5>${renderMemberHtml(m, cc.name)}</div>`);
+                        (md.changed || []).forEach(mc => {
+                            html += `<div class="DiffType Changed"><h5>Changed Member: ${mc.name} (${mc.memberType})</h5>${renderMemberHtml(mc.newMember, cc.name)}${mc.changes.map(renderChangeEntryHtml).join('')}</div>`;
+                        });
+                        html += `</div>`;
+                    }
+                }
+                html += `</div>`;
+            });
+        }
+    
+        html += "<h2>Enum Differences</h2>";
+        if (!enumDiffs || (enumDiffs.added.length === 0 && enumDiffs.removed.length === 0 && enumDiffs.changed.length === 0)) {
+            html += "<p>No enum differences.</p>";
+        } else {
+            (enumDiffs.added || []).forEach(enm => { /* ... */ html += `<div class="DiffEntry DiffType Added"><h3>Added Enum: ${enm.Name}</h3>${generateApiHtml({ Enums: [enm] })}</div>`; });
+            (enumDiffs.removed || []).forEach(enm => { /* ... */ html += `<div class="DiffEntry DiffType Removed"><h3>Removed Enum: ${enm.Name}</h3>${generateApiHtml({ Enums: [enm] })}</div>`; });
+            (enumDiffs.changed || []).forEach(ec => {
+                html += `<div class="DiffEntry DiffType Changed"><h3>Changed Enum: ${ec.name}</h3>`;
+                if (ec.changes && ec.changes.length > 0) { html += `<div class="EnumChanges"><h4>Enum-Level Changes:</h4>${ec.changes.map(renderChangeEntryHtml).join('')}</div>`; }
+                if (ec.itemDiff) {
+                    const id = ec.itemDiff;
+                    if ((id.added?.length || 0) > 0 || (id.removed?.length || 0) > 0 || (id.changed?.length || 0) > 0) {
+                        html += `<div class="EnumItemChanges"><h4>Enum Item Changes:</h4>`;
+                        (id.added || []).forEach(item => html += `<div class="DiffType Added"><h5>Added Item: ${item.Name}</h5><div class="EnumItem">${ec.name}.${item.Name} : ${item.Value} ${renderTagsHtml(item.Tags)}</div></div>`);
+                        (id.removed || []).forEach(item => html += `<div class="DiffType Removed"><h5>Removed Item: ${item.Name}</h5><div class="EnumItem">${ec.name}.${item.Name} : ${item.Value} ${renderTagsHtml(item.Tags)}</div></div>`);
+                        (id.changed || []).forEach(ic => {
+                            html += `<div class="DiffType Changed"><h5>Changed Item: ${ic.name}</h5><div class="EnumItem">${ec.name}.${ic.newItem.Name} : ${ic.newItem.Value} ${renderTagsHtml(ic.newItem.Tags)}</div>${ic.changes.map(renderChangeEntryHtml).join('')}</div>`;
+                        });
+                        html += `</div>`;
+                    }
+                }
+                html += `</div>`;
+            });
+        }
+        return html;
+    }
+    function generateDiffTxt(diffResult, oldApiData, newApiData) { /* ... (full implementation from previous steps) ... */ return "Diff TXT (see console for structure)"; }
 
     // --- Event Listeners ---
     if (viewApiDumpButton) viewApiDumpButton.addEventListener('click', async () => {
@@ -387,16 +552,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const diffResult = generateDiff(oldApiData, newApiData);
         setStatus("Diff generated. Displaying results.");
-        console.log("Generated Diff Object:", diffResult); // Log the actual diff object
+        console.log("Generated Diff Object:", JSON.parse(JSON.stringify(diffResult))); // Log a clone
         
         let diffContent = "";
         if (selectedFormat === "HTML") {
             diffContent = generateDiffHtml(diffResult, oldApiData, newApiData);
+            console.log("Generated HTML Diff Content Length:", diffContent?.length);
         } else if (selectedFormat === "TXT") {
             diffContent = generateDiffTxt(diffResult, oldApiData, newApiData);
+            console.log("Generated TXT Diff Content Length:", diffContent?.length);
         } else { 
             diffContent = JSON.stringify(diffResult, null, 2);
+            console.log("Generated JSON Diff Content Length:", diffContent?.length);
         }
+
+        if (!diffContent && (selectedFormat === "HTML" || selectedFormat === "TXT")) {
+             setStatus("Diff content generation seems to have resulted in empty output for HTML/TXT. Check console.", true);
+        } else if (selectedFormat === "JSON" && (!diffResult || Object.keys(diffResult.classes).every(key => diffResult.classes[key].length ===0) && Object.keys(diffResult.enums).every(key => diffResult.enums[key].length ===0) )) {
+             setStatus("Diff object is effectively empty (no differences found or error in diff generation).", false);
+        }
+        
         displayData(diffContent, selectedFormat, true); 
         toggleLoading(false);
     });
