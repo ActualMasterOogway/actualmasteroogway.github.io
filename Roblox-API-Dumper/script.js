@@ -30,22 +30,39 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`HTTP ${response.status} fetching DeployHistory.txt`);
             const text = await response.text();
             
-            const regex = /New Studio64 (version-[0-9a-fA-F]+)/g;
-            const versionSet = new Set();
+            // Regex to capture version GUID and git hash
+            // Example: New Studio64 version-aeed6bba24764418 at 4/9/2025 3:15:13 PM, file version: 0, 668, 0, 6680661, git hash: 0.668.0.6680661 ...
+            const regex = /New Studio64 (version-[0-9a-fA-F]+)[^,]*?,[^,]*?,[^,]*?, git hash: ([0-9a-zA-Z.-]+)/g;
+            const versionsMap = new Map(); // Use a map to handle duplicate GUIDs, keeping the first hash seen
             let match;
-            while ((match = regex.exec(text)) !== null) versionSet.add(match[1]);
+            while ((match = regex.exec(text)) !== null) {
+                const guid = match[1];
+                const hash = match[2];
+                if (!versionsMap.has(guid)) { // Keep the first entry for a GUID (usually newest if file is chronological)
+                    versionsMap.set(guid, { guid, hash });
+                }
+            }
             
-            availableStudioVersions = Array.from(versionSet).reverse();
+            // Convert map values to array and reverse to have newest first (as they appear last in file and map preserves insertion order)
+            availableStudioVersions = Array.from(versionsMap.values()).reverse(); 
 
             if (availableStudioVersions.length === 0) {
-                setStatus("No Studio64 versions found. Using fallback.", true);
-                availableStudioVersions = ["0.618.0.6180417", "0.617.0.6170388", "0.616.0.6160393"]; 
+                setStatus("No Studio64 versions with hashes found. Using fallback.", true);
+                availableStudioVersions = [
+                    { guid: "0.618.0.6180417", hash: "0.618.0.6180417 (fallback)" },
+                    { guid: "0.617.0.6170388", hash: "0.617.0.6170388 (fallback)" },
+                    { guid: "0.616.0.6160393", hash: "0.616.0.6160393 (fallback)" }
+                ]; 
             } else {
-                setStatus(`Found ${availableStudioVersions.length} Studio64 versions.`);
+                setStatus(`Found ${availableStudioVersions.length} unique Studio64 versions with hashes.`);
             }
         } catch (error) {
             setStatus(`Error fetching/parsing DeployHistory: ${error.message}. Using fallback. (Check CORS)`, true);
-            availableStudioVersions = ["0.618.0.6180417", "0.617.0.6170388", "0.616.0.6160393"];
+            availableStudioVersions = [
+                { guid: "0.618.0.6180417", hash: "0.618.0.6180417 (fallback)" },
+                { guid: "0.617.0.6170388", hash: "0.617.0.6170388 (fallback)" },
+                { guid: "0.616.0.6160393", hash: "0.616.0.6160393 (fallback)" }
+            ];
         } finally {
             populateVersionDropdowns();
             toggleLoading(false);
@@ -55,16 +72,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateVersionDropdowns() {
         [versionADropdown, versionBDropdown].forEach((dropdown, idx) => {
             if (!dropdown) return;
-            const currentValue = dropdown.value;
-            dropdown.innerHTML = "";
-            availableStudioVersions.forEach(version => {
-                const option = new Option(version, version);
+            const currentValueGuid = dropdown.value; // Store the currently selected GUID
+            dropdown.innerHTML = ""; // Clear existing options
+            availableStudioVersions.forEach(versionInfo => {
+                const option = new Option(versionInfo.hash, versionInfo.guid); // Display hash, value is GUID
                 dropdown.add(option);
             });
-            if (availableStudioVersions.includes(currentValue)) {
-                dropdown.value = currentValue;
+
+            // Try to restore previous selection or set default
+            if (currentValueGuid && availableStudioVersions.some(v => v.guid === currentValueGuid)) {
+                dropdown.value = currentValueGuid;
             } else if (availableStudioVersions.length > 0) {
-                dropdown.value = availableStudioVersions[idx === 0 ? 0 : (availableStudioVersions.length > 1 ? 1 : 0)];
+                // Set default: versionA to newest, versionB to second newest (or newest if only one)
+                const defaultGuid = availableStudioVersions[idx === 0 ? 0 : (availableStudioVersions.length > 1 ? 1 : 0)].guid;
+                dropdown.value = defaultGuid;
             }
         });
     }
