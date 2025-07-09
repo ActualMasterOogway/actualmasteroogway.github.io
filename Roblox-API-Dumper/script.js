@@ -109,18 +109,18 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- Tag Normalization ---
     function normalizeTagArray(tagsArray = []) {
-        return (tagsArray || []).map(tag => {
-            if (typeof tag === 'object' && tag !== null) {
-                // This case should ideally not happen if JSON is clean and Tags are strings.
-                // If it does, it means the source JSON has objects in the Tags array.
-                // The C# deserializer would have put these into Metadata or ignored them
-                // if they weren't strings. We'll log a warning and try to get a 'Name'.
-                console.warn("Encountered an object within a Tags array:", tag);
-                return tag.Name || tag.name || "[Unknown Object Tag]"; 
-            }
-            return String(tag);
-        }).filter(tag => tag && tag.trim() !== ""); 
+        return (tagsArray || [])
+            .map(tag => {
+                if (typeof tag === 'object' && tag !== null) {
+                    console.warn("Normalizing object tag:", tag);
+                    // Try to find PreferredDescriptorName, then Name, then name, otherwise filter out
+                    return String(tag.PreferredDescriptorName || tag.Name || tag.name || null); 
+                }
+                return String(tag); 
+            })
+            .filter(tag => tag && tag.trim() !== "" && tag !== "null"); 
     }
+
 
     // --- HTML/TXT Generation (Single API Dump) ---
     function renderHtmlSymbol(symbol) { return `<span class="symbol">${symbol}</span>`; }
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return text ? `<span class="Serialization">[${text}]</span>` : "";
     }
     function renderMemberHtml(member, className) { 
-        const isDeprecated = member.Tags && normalizeTagArray(member.Tags).includes("Deprecated"); // Normalize here
+        const isDeprecated = member.Tags && normalizeTagArray(member.Tags).includes("Deprecated");
         let html = `<div class="child ${member.MemberType || 'UnknownMember'} ${isDeprecated ? "deprecated" : ""}">`;
         html += `<span class="DescriptorType ${member.MemberType || ''}">${member.MemberType || 'Unknown'}</span> `;
         html += `<span class="Name">${className}${member.MemberType === 'Function' || member.MemberType === 'Callback' ? ':' : '.'}${member.Name}</span>`;
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             html += ` ${renderSecurityHtml(member.Security)}`;
         }
-        html += ` ${renderTagsHtml(normalizeTagArray(member.Tags))}`; // Normalize here
+        html += ` ${renderTagsHtml(normalizeTagArray(member.Tags))}`; 
         if (member.ThreadSafety) {
              let tsValue = typeof member.ThreadSafety === 'object' ? member.ThreadSafety.Value : member.ThreadSafety;
              if(tsValue && tsValue !== "Unknown") html += ` <span class="ThreadSafety">[${tsValue}]</span>`;
@@ -249,30 +249,30 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!apiData || (!apiData.Classes && !apiData.Enums)) return "<p>No API data to display.</p>";
         let html = ""; 
         (apiData.Classes || []).sort((a,b) => a.Name.localeCompare(b.Name)).forEach(classDesc => {
-            const isDeprecated = classDesc.Tags && normalizeTagArray(classDesc.Tags).includes("Deprecated"); // Normalize
+            const isDeprecated = classDesc.Tags && normalizeTagArray(classDesc.Tags).includes("Deprecated");
             html += `<div class="Class ${isDeprecated ? "deprecated" : ""}">`;
             html += `<span class="DescriptorType Class">Class</span> <span class="Name">${classDesc.Name}</span>`;
             if (classDesc.Superclass && classDesc.Superclass !== "<<<ROOT>>>") {
                 html += ` ${renderHtmlSymbol(":")} <span class="Superclass">${classDesc.Superclass}</span>`;
             }
             html += ` ${renderSecurityHtml(classDesc.Security)}`; 
-            html += ` ${renderTagsHtml(normalizeTagArray(classDesc.Tags))}`; // Normalize
+            html += ` ${renderTagsHtml(normalizeTagArray(classDesc.Tags))}`; 
             html += `</div>`;
             (classDesc.Members || []).sort((a,b) => ((a.MemberType||"Z").localeCompare(b.MemberType||"Z")) || a.Name.localeCompare(b.Name))
-                             .forEach(member => html += renderMemberHtml(member, classDesc.Name)); // renderMemberHtml will normalize its tags
+                             .forEach(member => html += renderMemberHtml(member, classDesc.Name));
         });
         (apiData.Enums || []).sort((a,b) => a.Name.localeCompare(b.Name)).forEach(enumDesc => {
-            const isDeprecated = enumDesc.Tags && normalizeTagArray(enumDesc.Tags).includes("Deprecated"); // Normalize
+            const isDeprecated = enumDesc.Tags && normalizeTagArray(enumDesc.Tags).includes("Deprecated");
             html += `<div class="Enum ${isDeprecated ? "deprecated" : ""}">`;
             html += `<span class="DescriptorType Enum">Enum</span> <span class="Name">${enumDesc.Name}</span>`;
-            html += ` ${renderTagsHtml(normalizeTagArray(enumDesc.Tags))}`; // Normalize
+            html += ` ${renderTagsHtml(normalizeTagArray(enumDesc.Tags))}`; 
             html += `</div>`;
             (enumDesc.Items || []).sort((a,b) => a.Value - b.Value).forEach(item => {
-                 const itemDeprecated = item.Tags && normalizeTagArray(item.Tags).includes("Deprecated"); // Normalize
+                 const itemDeprecated = item.Tags && normalizeTagArray(item.Tags).includes("Deprecated");
                  html += `<div class="child EnumItem ${itemDeprecated ? "deprecated" : ""}">`;
                  html += `<span class="DescriptorType EnumItem">EnumItem</span> <span class="Name">${enumDesc.Name}.${item.Name}</span>`;
                  html += ` ${renderHtmlSymbol(":")} <span class="Value">${item.Value}</span>`;
-                 html += ` ${renderTagsHtml(normalizeTagArray(item.Tags))}`; // Normalize
+                 html += ` ${renderTagsHtml(normalizeTagArray(item.Tags))}`; 
                  html += `</div>`;
             });
         });
@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function generateApiTxt(apiData) { 
         if (!apiData) return "No API data to display.";
         let txt = "";
-        const formatTags = (tags = []) => normalizeTagArray(tags).map(t => `[${t}]`).join(" "); // Normalize
+        const formatTags = (tags = []) => normalizeTagArray(tags).map(t => `[${t}]`).join(" "); 
         const formatSecurity = (sec) => { /* ... */ return sec ? JSON.stringify(sec) : ""; };
         const formatLuaType = (lt) => lt ? lt.Name : "any";
         const formatParams = (params = []) => `(${(params || []).map(p => `${p.Name}: ${formatLuaType(p.Type)}`).join(", ")})`;
@@ -331,9 +331,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return true;
         } return false;
     }
-    // compareTags now normalizes its inputs
     function compareTags(oldTagsRaw = [], newTagsRaw = [], changeList, context = null) {
-        const oldTags = normalizeTagArray(oldTagsRaw);
+        const oldTags = normalizeTagArray(oldTagsRaw); 
         const newTags = normalizeTagArray(newTagsRaw);
         const oldTagSet = new Set(oldTags); const newTagSet = new Set(newTags); let changed = false;
         oldTags.forEach(t => { if (!newTagSet.has(t)) { changeList.push({ type: 'removedTag', tag: t, context }); changed = true; }});
@@ -352,7 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     function compareParameters(oldP = [], newP = [], changeList, context = null) { 
         const oldParams = oldP || []; const newParams = newP || [];
-        // Ensure p.Type exists before accessing p.Type.Name
         const oldStr = JSON.stringify(oldParams.map(p=>({N:p.Name, T:p.Type?.Name, D:p.Default}))); 
         const newStr = JSON.stringify(newParams.map(p=>({N:p.Name, T:p.Type?.Name, D:p.Default})));
         if (oldStr !== newStr) { changeList.push({ type: 'changedParametersDetail', from: oldParams, to: newParams, context }); return true; }
@@ -374,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 diff.removed.push(oldM); diff.added.push(newM); return;
             }
             const changes = [];
-            compareTags(oldM.Tags, newM.Tags, changes, "Tags"); // compareTags now normalizes
+            compareTags(oldM.Tags, newM.Tags, changes, "Tags");
             compareSecurity(oldM.Security, newM.Security, changes, "Security");
             compareSimpleValue(oldM.ThreadSafety, newM.ThreadSafety, changes, "ThreadSafety");
 
@@ -401,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!oldI) {diff.added.push(newI); return;}
             const changes = [];
             compareSimpleValue(oldI.Value, newI.Value, changes, "Value");
-            compareTags(oldI.Tags, newI.Tags, changes, "Tags"); // compareTags now normalizes
+            compareTags(oldI.Tags, newI.Tags, changes, "Tags");
             if (changes.length > 0) diff.changed.push({ name, oldItem: oldI, newItem: newI, changes });
         });
         mapOld.forEach((oldI, name) => { if (!mapNew.has(name)) diff.removed.push(oldI); });
@@ -431,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 processedOldClassNames.add(className); 
                 const classSpecificChanges = [];
                 compareSimpleValue(oldC.Superclass, newC.Superclass, classSpecificChanges, "Superclass");
-                compareTags(oldC.Tags, newC.Tags, classSpecificChanges, "Class Tags"); // compareTags normalizes
+                compareTags(oldC.Tags, newC.Tags, classSpecificChanges, "Class Tags"); 
                 compareSecurity(oldC.Security, newC.Security, classSpecificChanges, "Class Security");
                 
                 const memberDiff = diffMembers(oldC.Members, newC.Members, className);
@@ -468,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 processedOldEnumNames.add(enumName);
                 const enumSpecificChanges = [];
-                compareTags(oldE.Tags, newE.Tags, enumSpecificChanges, "Enum Tags"); // compareTags normalizes
+                compareTags(oldE.Tags, newE.Tags, enumSpecificChanges, "Enum Tags"); 
                 const itemDiff = diffEnumItems(oldE.Items, newE.Items, enumName);
     
                 if (enumSpecificChanges.length > 0 ||
@@ -506,9 +504,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const propertyNameText = change.property || (change.type.includes("Tag") ? "Tag" : change.type.replace(/^(changed|added|removed)/, ""));
         html += `<span class="DiffProperty">${propertyNameText.charAt(0).toUpperCase() + propertyNameText.slice(1)}:</span> `;
         if (change.type === 'addedTag') {
-            html += `<span class="TagChange AddedTag">+ ${renderTagsHtml(normalizeTagArray([change.tag]))}</span>`; // Normalize tag if it wasn't already a string
+            html += `<span class="TagChange AddedTag">+ ${renderTagsHtml([change.tag])}</span>`; 
         } else if (change.type === 'removedTag') {
-            html += `<span class="TagChange RemovedTag">- ${renderTagsHtml(normalizeTagArray([change.tag]))}</span>`; // Normalize tag
+            html += `<span class="TagChange RemovedTag">- ${renderTagsHtml([change.tag])}</span>`; 
         } else if (change.from !== undefined || change.to !== undefined) {
             let fromHtml = "<i>N/A</i>", toHtml = "<i>N/A</i>";
             const prop = change.property; 
@@ -593,8 +591,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function changeEntryTxt(change, indent = "    ") {
             let detail = `${indent}* ${change.property || (change.type.includes("Tag") ? "Tag" : change.type.replace(/^(changed|added|removed)/, ""))}: `;
-            if (change.type === 'addedTag') detail += `+ [${String(change.tag)}]`; // Ensure string
-            else if (change.type === 'removedTag') detail += `- [${String(change.tag)}]`; // Ensure string
+            if (change.type === 'addedTag') detail += `+ [${String(change.tag)}]`; 
+            else if (change.type === 'removedTag') detail += `- [${String(change.tag)}]`; 
             else if (change.from !== undefined || change.to !== undefined) {
                 const fromStr = String(change.from !== undefined ? change.from : "N/A");
                 const toStr = String(change.to !== undefined ? change.to : "N/A");
