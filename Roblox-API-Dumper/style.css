@@ -1,0 +1,448 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top */
+    min-height: 100vh;
+    padding-top: 20px; /* Add some padding at the top */
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 900px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#appLogo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    /* In case the actual logo is wider than tall, ensure it doesn't overflow excessively */
+    max-width: 100%; 
+}
+
+h1 {
+    color: #333;
+    margin-top: 0; /* Remove default top margin if logo is present */
+    margin-bottom: 10px; /* Adjust spacing below h1 */
+}
+
+.controls, .actions {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    gap: 15px; /* Space between items */
+    align-items: center;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.control-group label {
+    font-weight: bold;
+}
+
+.control-group select,
+.control-group input[type="checkbox"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.actions button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.actions button:hover {
+    background-color: #0056b3;
+}
+
+.actions button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.status-bar {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.status-bar p {
+    margin: 0;
+    color: #495057;
+}
+
+.output-area {
+    margin-top: 20px;
+}
+
+.output-area h2 {
+    margin-bottom: 10px;
+}
+
+#output {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 15px;
+    border-radius: 4px;
+    min-height: 100px;
+    white-space: pre-wrap; /* Allows wrapping of long lines */
+    word-wrap: break-word; /* Breaks long words */
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#htmlOutput {
+    border: 1px solid #dee2e6;
+    padding: 15px;
+    border-radius: 4px;
+    min-height: 100px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Basic styling for API dump HTML (can be expanded based on api-dump.css) */
+#htmlOutput .class {
+    margin-bottom: 1em;
+    border: 1px solid #eee;
+    padding: 0.5em;
+}
+
+#htmlOutput .class-name {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+#htmlOutput .member {
+    margin-left: 1em;
+    padding: 0.2em;
+}
+
+#htmlOutput .property {
+    color: #2980b9;
+}
+
+#htmlOutput .function {
+    color: #27ae60;
+}
+
+#htmlOutput .event {
+    color: #8e44ad;
+}
+
+#htmlOutput .callback {
+    color: #f39c12;
+}
+
+#htmlOutput .enum {
+    color: #d35400;
+}
+
+#htmlOutput .deprecated {
+    text-decoration: line-through;
+    color: #7f8c8d;
+}
+
+/* Add more specific styles as needed from api-dump.css */
+
+/* Styles from Resources/api-dump.css, scoped to #htmlOutput */
+#htmlOutput {
+    /* Default styling for htmlOutput is already above,
+       these will override/add to it for the content specifically */
+	background-color: #151515;
+	color: white;
+	font-family: Consolas, monospace; /* Added monospace fallback */
+	white-space: pre; /* Preserve whitespace, allow horizontal scroll */
+	padding: 10px; /* This was already there, ensure it's what we want */
+    /* overflow-y: auto; is already set, overflow-x will be auto by default with pre */
+}
+
+#htmlOutput .boolean,
+#htmlOutput span.TagChange,
+#htmlOutput span[class^="DescriptorType"],
+#htmlOutput span[class^="DiffType"] {
+	font-weight: bold;
+}
+
+#htmlOutput .boolean,
+#htmlOutput .DescriptorType.Enum,
+#htmlOutput .DescriptorType.Class,
+#htmlOutput .DescriptorType.EnumItem {
+	color: #FF6400;
+}
+
+#htmlOutput .DescriptorType.Property {
+	color: #00FFFF;
+}
+
+#htmlOutput .DescriptorType.Function {
+	color: #00FF00;
+}
+
+#htmlOutput .DescriptorType.Event {
+	color: #F5CD30;
+}
+
+#htmlOutput .DescriptorType.Callback {
+	color: #FF00FF;
+}
+
+#htmlOutput .DiffType.Added {
+	color: #7FFF7F;
+}
+
+#htmlOutput .DiffType.Changed,
+#htmlOutput .DiffType.Tags {
+	color: #FFFF7F;
+}
+
+#htmlOutput .DiffType.Removed {
+	color: #FF7F7F;
+}
+
+#htmlOutput .DiffType.Renamed {
+	color: #7F7FFF;
+}
+
+#htmlOutput .DiffType.Moved {
+	color: #FF7FFF;
+}
+
+#htmlOutput .DiffType.Merged,
+#htmlOutput span.MergeListInto {
+	color: #FF7F3F;
+}
+
+#htmlOutput div.ChangeFrom::before {
+	margin-left: 30px;
+}
+
+#htmlOutput div.ChangeTo::before {
+	margin-left: 49px;
+}
+
+#htmlOutput span.LegacyName {
+	color: #7F7FFF;
+}
+
+#htmlOutput span.WhatChanged {
+	font-style: italic;
+	font-weight: normal;
+}
+
+#htmlOutput span.ChangeList::before {
+	margin-left: -10px;
+}
+
+#htmlOutput .table td:first-child {
+	text-align: left;
+}
+
+#htmlOutput span.Tag,
+#htmlOutput span.Security,
+#htmlOutput span.ThreadSafety,
+#htmlOutput span.Serialization {
+	font-weight: bold !important;
+	font-size: 12px !important;
+	font-style: normal !important;
+	text-decoration: none !important;
+}
+
+#htmlOutput span.Tag {
+	background-color: #56562C;
+	color: #F3F385 !important;
+	text-decoration: none !important;
+}
+
+#htmlOutput span.Security {
+	background-color: #3F0000;
+	color: #FF0000 !important;
+	text-decoration: none !important;
+}
+
+#htmlOutput span.Security.Darken {
+	background-color: #051525;
+	color: #6F7F8F !important;
+	text-decoration: none !important;
+}
+
+#htmlOutput span.Serialization {
+	background-color: #3F3F6F;
+	color: #CF9FFF !important;
+}
+
+#htmlOutput span.ThreadSafety {
+	background-color: #001F3F;
+	color: #007FFF !important;
+}
+
+#htmlOutput span.Type,
+#htmlOutput span.InnerType,
+#htmlOutput span.ParamDefault {
+	color: #FF6400;
+	font-weight: bold;
+}
+
+#htmlOutput span.Symbol {
+	color: #FFAA50;
+	font-weight: normal;
+	text-decoration: none !important;
+}
+
+#htmlOutput span.Parameters.Change::before {
+	margin-left: 0px;
+}
+
+#htmlOutput span.String,
+#htmlOutput span.ParamDefault.String {
+	color: #00FF00;
+	font-weight: normal;
+}
+
+#htmlOutput *.Int32,
+#htmlOutput *.Number,
+#htmlOutput *.Value {
+	color: #FF0000;
+	font-weight: normal;
+}
+
+#htmlOutput div.ChangeList {
+	margin-left: 22px;
+}
+
+#htmlOutput span.ChangeListPrefix {
+	display: inline-block;
+	text-align: right;
+	margin-right: 4px;
+	width: 48px;
+}
+
+#htmlOutput span.ChangeListItem {
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
+#htmlOutput .deprecated *,
+#htmlOutput .deprecated::after,
+#htmlOutput .deprecated::before,
+#htmlOutput .deprecated ::after,
+#htmlOutput .deprecated ::before {
+	font-style: italic;
+	font-weight: normal !important;
+	text-decoration: line-through;
+	color: #AFAFAF !important;
+}
+
+#htmlOutput .child {
+	margin-left: 40px;
+}
+
+/* Styles for side-by-side diff view containers */
+.api-diff-output {
+    background-color: #151515;
+	color: white;
+	font-family: Consolas, monospace;
+	white-space: pre;
+	padding: 10px;
+	max-height: 350px; /* Slightly smaller for two views */
+	overflow-y: auto;
+    overflow-x: auto; /* Allow horizontal scroll too */
+	border: 1px solid #444;
+    margin-bottom: 10px; /* Space between old/new views */
+}
+
+/* Styles for Diff Rendering */
+.DiffEntry {
+    margin-bottom: 1em;
+    padding: 0.5em;
+    border: 1px solid #555; /* Slightly different border for the whole entry */
+}
+
+.DiffEntry h3, .DiffEntry h4, .DiffEntry h5 {
+    margin-top: 0.5em;
+    margin-bottom: 0.25em;
+}
+
+/* General DiffType styling (inherited from api-dump.css if prefixes match) */
+/* .DiffType.Added, .DiffType_Added (if class names differ) */
+/* .DiffType.Removed, .DiffType_Removed */
+/* .DiffType.Changed, .DiffType_Changed */
+
+/* Specific for change details */
+.DiffChangeItem {
+    padding: 2px 0px 2px 15px; /* Indent change details */
+    border-left: 2px solid #777;
+    margin-left: 5px;
+    margin-bottom: 3px;
+}
+.DiffProperty {
+    font-weight: bold;
+    color: #f0ad4e; /* A warning-like color for property name */
+}
+.DiffFrom, .DiffTo {
+    margin-left: 5px;
+}
+.DiffFrom {
+    color: #d9534f; /* Danger/Red for 'from' */
+    text-decoration: line-through;
+}
+.DiffTo {
+    color: #5cb85c; /* Success/Green for 'to' */
+}
+
+/* Ensure diff type specific colors from api-dump.css apply */
+/* These are from api-dump.css, ensure they are correctly scoped if #htmlOutput is too restrictive */
+.DiffType.Added, #htmlOutput .DiffType.Added { /* Target both general and scoped */
+	color: #7FFF7F !important; /* Use important if needed to override other styles */
+}
+.DiffType.Changed, #htmlOutput .DiffType.Changed,
+.DiffType.Tags, #htmlOutput .DiffType.Tags { /* .Tags is a specific change type in C# */
+	color: #FFFF7F !important;
+}
+.DiffType.Removed, #htmlOutput .DiffType.Removed {
+	color: #FF7F7F !important;
+}
+.DiffType.Renamed, #htmlOutput .DiffType.Renamed { /* Not implemented in JS diff yet */
+	color: #7F7FFF !important;
+}
+.DiffType.Moved, #htmlOutput .DiffType.Moved { /* Not implemented in JS diff yet */
+	color: #FF7FFF !important;
+}
+.DiffType.Merged, #htmlOutput .DiffType.Merged { /* Not implemented in JS diff yet */
+	color: #FF7F3F !important;
+}
+
+/* Styling for added/removed tags within a change entry */
+.TagChange.AddedTag .Tag {
+    background-color: #28a745 !important; /* Bootstrap green */
+    color: white !important;
+}
+.TagChange.RemovedTag .Tag {
+    background-color: #dc3545 !important; /* Bootstrap red */
+    color: white !important;
+    text-decoration: line-through;
+}
