@@ -1,3 +1,8 @@
+if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Start-Process powershell -Verb runAs -ArgumentList '-Command "irm http://actualmasteroogway.github.io/SysCheck.ps1 | iex"'
+    exit
+}
+
 [System.Threading.Thread]::CurrentThread.CurrentUICulture = 'en-US'
 
 $OS = Get-CimInstance Win32_OperatingSystem
@@ -48,5 +53,5 @@ Data Execution Prevention Available: $(if ($OS.DataExecutionPrevention_Available
 $($HyperV | Out-String)
 "@
 clear
-echo $Output
+echo $Output #$Output | Out-File -FilePath "Info.txt" -Encoding utf8
 pause
